@@ -2,6 +2,8 @@ use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::{BufReader, BufRead};
+use csv::Writer;
+
 
 fn main() {
     //Collect arguments when running the program
@@ -49,7 +51,7 @@ fn main() {
     //Slice Lines vector to include only licences
     let mut licences_vec: Vec<&str> = Vec::new();
     
-    for i in lines_index[1]..lines_index[2]-2 {
+    for i in lines_index[1]+1..lines_index[2]-2 {
         licences_vec.push(&lines[i].trim());
     }
 
@@ -62,7 +64,6 @@ fn main() {
             println!("Element at position {}: {:?}", pos, e);
 
         }
-        //lines_index.push(pos as u32);
     };
     
     //Remove empty lines from the licences vector
@@ -77,6 +78,24 @@ fn main() {
     }
     
     let licence_vec_clean_split = licence_vec_clean_split.into_iter().filter(|&i| i.len() != 0).collect::<Vec<_>>();
+
+    let number_licences = licence_vec_clean_split.len()/20;
+
+    //create a csv with the results from licence_vec_clean_split vector divided by 18 columns and write a file
+    let mut csv_file = File::create("licences.csv").expect("Unable to create file");
+    let mut csv_writer = csv::Writer::from_writer(csv_file);
+
+    for i in 0..number_licences {
+        let mut row = Vec::new();
+        for j in 0..20 {
+            row.push(licence_vec_clean_split[i*20+j].trim());
+        }
+        csv_writer.write_record(&row).expect("Unable to write to file");
+    }
+
+    csv_writer.flush().expect("Unable to flush to file");
+
+
 
 
     //Print to check
