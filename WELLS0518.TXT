@@ -1,0 +1,241 @@
+                                        ALBERTA ENERGY REGULATOR                                        
+                                                                                                        
+                                   WELL LICENCES ISSUED  DAILY LIST                                     
+                                                                                                        
+                                                                                                        
+
+    DATE: 18 May 2022                                                                                   
+                                                                                                        
+
+    --------------------------------------------------------------------------------------------        
+    WELL NAME               LICENCE NUMBER         MINERAL RIGHTS       GROUND ELEVATION                
+    UNIQUE IDENTIFIER       SURFACE CO-ORDINATES   AER FIELD CENTRE     PROJECTED DEPTH                 
+    AER CLASSIFICATION      FIELD                                       TERMINATING ZONE                
+    DRILLING OPERATION      WELL PURPOSE           WELL  TYPE           SUBSTANCE                       
+    LICENSEE                                                            SURFACE LOCATION                
+    --------------------------------------------------------------------------------------------        
+
+    SRL C6 ETHELLK 6-17-64-3             0504255   ALBERTA CROWN        581M                            
+    1AB/06-17-064-03W4/00  N  745.8M  E  437.6M    BONNYVILLE           487.0M                          
+    OV (C)                               ETHEL LAKE                     CLEARWATER FM                   
+    DIRECTIONAL                          NEW       OIL SAND EVALUATION  CRUDE BITUMEN                   
+    STRATHCONA RESOURCES LTD.                                           06-17-064-03W4                  
+                                                                                                        
+    COPRC 103P04SORW RESDELN 11-23-83-7  0504256   ALBERTA CROWN        680.2M                          
+    114/11-23-083-07W4/00  S   14.1M  W  123.5M    BONNYVILLE           1725.0M                         
+    DEV (NC)                             RESDELN                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CONOCOPHILLIPS CANADA RESOURCES CORP.                               16-15-083-07W4                  
+                                                                                                        
+    TOURMALINE HZ LAMBERT 8-30-50-21     0504257   ALBERTA CROWN        1155M                           
+    100/08-30-050-21W5/00  S  170.4M  E  186.7M    DRAYTON VALLEY       6100.0M                         
+    DEV (NC)                             LAMBERT                        SPIRIT RIVER FM                 
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    TOURMALINE OIL CORP.                                                13-31-050-21W5                  
+                                                                                                        
+    TOURMALINE HZ LAMBERT 1-25-50-22     0504258   ALBERTA CROWN        1155M                           
+    100/01-25-050-22W5/00  S  165.5M  E  186.4M    DRAYTON VALLEY       6100.0M                         
+    DEV (NC)                             LAMBERT                        SPIRIT RIVER FM                 
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    TOURMALINE OIL CORP.                                                13-31-050-21W5                  
+                                                                                                        
+    CNRL HZ MARTENH 8-9-74-24            0504259   ALBERTA CROWN        669.5M                          
+    100/08-09-074-24W4/00  N  596.1M  W  470.5M    SLAVE LAKE           2500.0M                         
+    DEV (NC)                             MARTEN HILLS                   CLEARWATER FM                   
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  07-08-074-24W4                  
+                                                                                                        
+    CNRL HZ 102 MARTENH 9-9-74-24        0504260   ALBERTA CROWN        670.1M                          
+    102/09-09-074-24W4/00  N  603.6M  W  470.5M    SLAVE LAKE           2500.0M                         
+    DEV (NC)                             MARTEN HILLS                   CLEARWATER FM                   
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  07-08-074-24W4                  
+                                                                                                        
+    CNRL HZ MARTENH 16-9-74-24           0504261   ALBERTA CROWN        674M                            
+    100/16-09-074-24W4/00  N  661.1M  W  470.2M    SLAVE LAKE           2500.0M                         
+    DEV (NC)                             MARTEN HILLS                   CLEARWATER FM                   
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  07-08-074-24W4                  
+                                                                                                        
+    CNRL HZ 102 MARTENH 16-9-74-24       0504262   ALBERTA CROWN        674.1M                          
+    102/16-09-074-24W4/00  N  653.6M  W  470.2M    SLAVE LAKE           2500.0M                         
+    DEV (NC)                             MARTEN HILLS                   CLEARWATER FM                   
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  07-08-074-24W4                  
+                                                                                                        
+    HARVEST HZ KAKWA 2-13-64-7           0504263   ALBERTA CROWN        896.2M                          
+    100/02-13-064-07W6/00  N  495.9M  E  787.4M    GRANDE PRAIRIE       6816.0M                         
+    DEV (C)                              KAKWA                          MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    HARVEST OPERATIONS CORP.                                            06-25-064-07W6                  
+                                                                                                        
+    SURGE ENERGY INC PROVOST 9-18-39-2   0504264   ALBERTA CROWN        675.7M                          
+    102/09-18-039-02W4/00  S  580.0M  W  119.0M    WAINWRIGHT           2450.0M                         
+    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SURGE ENERGY INC.                                                   09-13-039-03W4                  
+                                                                                                        
+    SURGE ENERGY INC PROVOST 9-18-39-2   0504265   ALBERTA CROWN        675.9M                          
+    103/09-18-039-02W4/00  S  565.0M  W  119.0M    WAINWRIGHT           2430.0M                         
+    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SURGE ENERGY INC.                                                   09-13-039-03W4                  
+                                                                                                        
+    SURGE ENERGY INC PROVOST 16-18-39-2  0504266   ALBERTA CROWN        675.8M                          
+    100/16-18-039-02W4/00  S  550.0M  W  119.0M    WAINWRIGHT           2500.0M                         
+    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SURGE ENERGY INC.                                                   09-13-039-03W4                  
+                                                                                                        
+    SURGE ENERGY INC PROVOST 16-18-39-2  0504267   ALBERTA CROWN        675.8M                          
+    102/16-18-039-02W4/00  S  535.0M  W  119.0M    WAINWRIGHT           2650.0M                         
+    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SURGE ENERGY INC.                                                   09-13-039-03W4                  
+                                                                                                        
+    PINE CLIFF 102 HZ TWINING 9-29-32-24 0504268   ALBERTA CROWN        859.7M                          
+    102/09-29-032-24W4/00  S  335.0M  W  552.7M    RED DEER             3601.0M                         
+    DEV (NC)                             TWINING                        PEKISKO FM                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    PINE CLIFF ENERGY LTD.                                              15-30-032-24W4                  
+                                                                                                        
+    TOURMALINE HZ WILD RIV 1-4-55-26     0504269   ALBERTA CROWN        1257.6M                         
+    100/01-04-055-26W5/00  N  133.4M  W  185.5M    DRAYTON VALLEY       6524.0M                         
+    DEV (C)                              WILD RIVER                     SPIRIT RIVER FM                 
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    TOURMALINE OIL CORP.                                                01-16-055-26W5                  
+                                                                                                        
+    GROC DISP OBS HANGSTN 1-34-84-11     0504270   ALBERTA CROWN        563.1M                          
+    122/01-34-084-11W4/00  N   22.0M  W  318.3M    BONNYVILLE           190.0M                          
+    DSW (NC)                             HANGINGSTONE                   GRAND RAPIDS FM                 
+    VERTICAL                             NEW       OBSERVATION          NONE                            
+    GREENFIRE RESOURCES OPERATING CORPORATION                           01-34-084-11W4                  
+                                                                                                        
+    KARVE 102 HZ PROVOST 16-11-36-8      0504271   ALBERTA CROWN        811M                            
+    102/16-11-036-08W4/00  N  123.2M  E  509.6M    WAINWRIGHT           2369.0M                         
+    DEV (NC)                             PROVOST                        VIKING FM                       
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    KARVE ENERGY INC.                                                   03-11-036-08W4                  
+                                                                                                        
+    KARVE 102 HZ PROVOST 10-3-36-8       0504272   ALBERTA CROWN        810M                            
+    102/10-03-036-08W4/00  N  127.6M  E  500.6M    WAINWRIGHT           2240.0M                         
+    DEV (NC)                             PROVOST                        VIKING FM                       
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    KARVE ENERGY INC.                                                   03-11-036-08W4                  
+                                                                                                        
+    CVE L05P03-1 LEISMER 12-14-76-6      0504273   ALBERTA CROWN        573.7M                          
+    107/12-14-076-06W4/00  N  520.4M  W  630.4M    BONNYVILLE           1435.0M                         
+    DEV (NC)                             LEISMER                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CENOVUS ENERGY INC.                                                 07-23-076-06W4                  
+                                                                                                        
+    NORTH 40 HZ WINTERH 9-22-26-17       0504274   BOTH                 839.3M                          
+    100/09-22-026-17W4/00  S  251.0M  W  183.9M    MEDICINE HAT         2987.0M                         
+    DEV (NC)                             WINTERING HILLS                BANFF FM                        
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    NORTH 40 RESOURCES LTD.                                             16-21-026-17W4                  
+                                                                                                        
+    HWN KAYBOBS 12-30-60-18              0504275   ALBERTA CROWN        995.9M                          
+    102/12-30-060-18W5/00  N  210.5M  E  174.6M    EDMONTON             3500.0M                         
+    DEV (NC)                             KAYBOB SOUTH                   DUNVEGAN FM                     
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    HWN ENERGY LTD.                                                     04-29-060-18W5                  
+                                                                                                        
+    CVE W10P06-1 FISHER 7-24-70-5        0504276   ALBERTA CROWN        676.5M                          
+    114/07-24-070-05W4/00  S  626.9M  W  717.1M    BONNYVILLE           1550.0M                         
+    DEV (NC)                             FISHER                         MCMURRAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CENOVUS ENERGY INC.                                                 10-13-070-05W4                  
+                                                                                                        
+    NORTH 40 HZ WAYNE 3-32-26-17         0504277   FREEHOLD             869.2M                          
+    100/03-32-026-17W4/00  N     .1M  E  658.1M    MEDICINE HAT         2975.0M                         
+    DEV (NC)                             WAYNE-ROSEDALE                 BANFF FM                        
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    NORTH 40 RESOURCES LTD.                                             03-31-026-17W4                  
+                                                                                                        
+    MANCAL ENERGY HZ PEMBINA 15-34-49-12 0504278   ALBERTA CROWN        947.8M                          
+    103/15-34-049-12W5/00  N   90.8M  E  163.5M    DRAYTON VALLEY       5512.0M                         
+    DEV (NC)                             PEMBINA                        ELLERSLIE MBR                   
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    MANCAL ENERGY INC.                                                  04-27-049-12W5                  
+                                                                                                        
+    SPARTAN DELTA HZ ELM 9-13-69-5       0504279   ALBERTA CROWN        657.3M                          
+    100/09-13-069-05W6/00  N  474.4M  E  332.6M    GRANDE PRAIRIE       6200.0M                         
+    DEV (NC)                             ELMWORTH                       MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPARTAN DELTA CORP.                                                 05-26-069-05W6                  
+                                                                                                        
+    SPARTAN DELTA HZ ELM 16-13-69-5      0504280   ALBERTA CROWN        657.3M                          
+    100/16-13-069-05W6/00  N  482.4M  E  341.5M    GRANDE PRAIRIE       6000.0M                         
+    DEV (NC)                             ELMWORTH                       MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPARTAN DELTA CORP.                                                 05-26-069-05W6                  
+                                                                                                        
+    SPARTAN DELTA HZ ELM 8-24-69-5       0504281   ALBERTA CROWN        657.4M                          
+    100/08-24-069-05W6/00  N  490.5M  E  350.4M    GRANDE PRAIRIE       5800.0M                         
+    DEV (NC)                             ELMWORTH                       MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPARTAN DELTA CORP.                                                 05-26-069-05W6                  
+                                                                                                        
+    SPARTAN DELTA HZ ELM 9-24-69-5       0504282   ALBERTA CROWN        657.5M                          
+    100/09-24-069-05W6/00  N  498.6M  E  359.3M    GRANDE PRAIRIE       5400.0M                         
+    DEV (NC)                             ELMWORTH                       MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPARTAN DELTA CORP.                                                 05-26-069-05W6                  
+                                                                                                        
+    SPARTAN DELTA HZ ELM 4-30-69-4       0504283   ALBERTA CROWN        657.6M                          
+    100/04-30-069-04W6/00  N  506.7M  E  368.2M    GRANDE PRAIRIE       5800.0M                         
+    DEV (NC)                             ELMWORTH                       MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPARTAN DELTA CORP.                                                 05-26-069-05W6                  
+                                                                                                        
+    SPARTAN DELTA HZ ELM 12-30-69-4      0504284   ALBERTA CROWN        657.9M                          
+    100/12-30-069-04W6/00  N  514.7M  E  377.0M    GRANDE PRAIRIE       5600.0M                         
+    DEV (NC)                             ELMWORTH                       MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPARTAN DELTA CORP.                                                 05-26-069-05W6                  
+                                                                                                        
+    HEL KAYBOB 10-10-65-19               0504285   ALBERTA CROWN        786M                            
+    100/10-10-065-19W5/00  N  410.4M  E  202.1M    EDMONTON             6386.0M                         
+    DEV (NC)                             KAYBOB                         DUVERNAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    HITIC ENERGY LTD.                                                   05-21-065-19W5                  
+                                                                                                        
+    HEL KAYBOB 9-10-65-19                0504286   ALBERTA CROWN        786.1M                          
+    100/09-10-065-19W5/00  N  415.2M  E  210.8M    EDMONTON             6809.0M                         
+    DEV (NC)                             KAYBOB                         DUVERNAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    HITIC ENERGY LTD.                                                   05-21-065-19W5                  
+                                                                                                        
+    HEL KAYBOB 12-11-65-19               0504287   ALBERTA CROWN        786.1M                          
+    100/12-11-065-19W5/00  N  420.0M  E  219.6M    EDMONTON             6871.0M                         
+    DEV (NC)                             KAYBOB                         DUVERNAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    HITIC ENERGY LTD.                                                   05-21-065-19W5                  
+                                                                                                        
+    AMENDMENTS OF WELL LICENCES
+    ---------------------------
+
+    WELL NAME AND U.I.D.                LICENCE NO.  AMENDED TO READ
+    --------------------                -----------  ---------------
+
+    HWX 102 6HZ MARTENH 16-14-75-26        0503211   WELL NAME:                                         
+    103/16-14-075-26W4/00                            HWX 103 6HZ MARTENH 16-14-75-26                    
+
+    TOURMALINE HZ CHIME 2-34-60-5          0503452   GROUND ELEVATION                                   
+    100/02-34-060-05W6/00                            1195.70                                            
+
+                                                     SURFACE CO-ORDINATES:                              
+                                                     N 0774.5 W 0763.4                                  
+
+    TOURMALINE HZ CHIME 8-34-60-5          0503453   GROUND ELEVATION                                   
+    100/08-34-060-05W6/00                            1195.60                                            
+
+                                                     SURFACE CO-ORDINATES:                              
+                                                     N 0778.0 W 0760.0                                  
+
+    HWX 103 6HZ MARTENH 16-14-75-26        0504253   WELL NAME:                                         
+    102/16-14-075-26W4/00                            HWX 102 6HZ MARTENH 16-14-75-26                    
+
+
+    -------------------- END OF WELL LICENCES DAILY LIST  -------------------- 
