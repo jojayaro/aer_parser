@@ -40,6 +40,8 @@ fn main() {
 
     let mut lines_index_break: Vec<usize> = Vec::new();
     let mut lines_index_date: Vec<usize> = Vec::new();
+    let mut lines_index_cancelled: Vec<usize> = Vec::new();
+
     
     for (pos, e) in lines_iter {
         if e.contains("---") {
@@ -48,8 +50,10 @@ fn main() {
         } else if e.contains("DATE") {
             lines_index_date.push(pos);
             //println!("Element at position {}: {:?}", pos, e);
+        } else if e.contains("CANCELLED") {
+            lines_index_cancelled.push(pos);
+            //println!("Element at position {}: {:?}", pos, e);
         }
-
         };
 
         let date = &lines[lines_index_date[0]].trim()[6..];
@@ -64,9 +68,37 @@ fn main() {
         }
     };
 
-    let mut licence_vec_clean_split: Vec<&str> = Vec::new();
+    let mut cancelled_vec_index: Vec<usize> = Vec::new();
+
+    for i in lines_index_break {
+        if i > lines_index_cancelled[0] {
+                    cancelled_vec_index.push(i);
+        }
+    }
+
+    let mut cancelled_vec: Vec<&str> = Vec::new();
+    
+    for i in lines_index_cancelled[0]+5..cancelled_vec_index[2]-2 {
+        if lines[i].trim().len() > 0 {
+            cancelled_vec.push(&lines[i].trim());
+        }
+    };
+
+
+    let mut c = 0;
+    let mut cancelled_vec_clean_split: Vec<&str> = Vec::new();
+
+    while c < cancelled_vec.len() {
+        cancelled_vec_clean_split.push(&cancelled_vec[c][..cancelled_vec[c].len()-8].trim());
+        cancelled_vec_clean_split.push(&cancelled_vec[c][cancelled_vec[c].len()-7..].trim());
+        c += 2;
+    }
+
+    println!("{:?}", cancelled_vec_clean_split);
+
 
     let mut i = 0;
+    let mut licence_vec_clean_split: Vec<&str> = Vec::new();
 
     while i < licences_vec.len() {
         licence_vec_clean_split.push(&licences_vec[i].trim()[..37]);
@@ -123,10 +155,10 @@ fn main() {
 
     let number_licences = licence_vec_clean_split.len()/17;
 
-    let path = format!("{}.csv", date);
+    let path_lic = format!("ST1_Licences_{}.csv", date);
 
     //create a csv with the results from licence_vec_clean_split vector divided by 18 columns and write a file
-    let csv_file = File::create(path).expect("Unable to create file");
+    let csv_file = File::create(path_lic).expect("Unable to create file");
     let mut csv_writer = csv::Writer::from_writer(csv_file);
 
     for i in 0..number_licences {
@@ -143,7 +175,27 @@ fn main() {
 
     csv_writer.flush().expect("Unable to flush to file");
 
+    let number_cancelled = cancelled_vec_clean_split.len()/2;
 
+    let path_cancelled = format!("ST1_Cancelled_{}.csv", date);
+
+    //create a csv with the results from licence_vec_clean_split vector divided by 18 columns and write a file
+    let csv_file = File::create(path_cancelled).expect("Unable to create file");
+    let mut csv_writer = csv::Writer::from_writer(csv_file);
+
+    for i in 0..number_cancelled {
+        let mut row = Vec::new();
+        for j in 0..2 {
+            row.push(cancelled_vec_clean_split[i*2+j].trim());
+        }
+        row.push(date);
+
+        //println!("{:?}", row);
+
+        csv_writer.write_record(&row).expect("Unable to write to file");
+    }
+
+    csv_writer.flush().expect("Unable to flush to file");
 
 
     //Print to check
