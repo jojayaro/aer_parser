@@ -61,7 +61,6 @@ fn main() {
     for i in lines_index_break[1]+1..lines_index_break[2]-2 {
         if lines[i].trim().len() > 0 {
             licences_vec.push(&lines[i].trim());
-            
         }
     };
 
