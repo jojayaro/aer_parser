@@ -1,12 +1,10 @@
 use std::env;
-//use std::fs;
 use std::fs::File;
 use std::io::{BufReader, BufRead};
-//use csv::Writer;
-
+use downloader::Downloader;
 
 fn main() {
-    //Collect arguments when running the program
+    //Arguments
     let args: Vec<String> = env::args().collect();
 
     let query = &args[1];
@@ -15,54 +13,58 @@ fn main() {
     println!("Searching for {}", query);
     println!("In file {}", filename);
 
-//    //Open File
-//    let contents = fs::read_to_string(filename)
-//        .expect("Something went wrong reading the file");
+    //Downloader
+    let url = "https://static.aer.ca/prd/data/well-lic/WELLS0520.TXT";
 
-    //println!("With text:\n{}", contents);
+    let mut downloader = Downloader::builder()
+        .download_folder(std::path::Path::new("TXT"))
+        .parallel_requests(1)
+        .build()
+        .unwrap();
 
-    //Search for indices where query is found
-    //let v1: Vec<_> = contents.match_indices(query).collect();
+    let dl = downloader::Download::new(&url);
 
-    //println!("{:?}", v1);
+    let result = downloader.download(&[dl]).unwrap();
 
-    //Insert file lines contents into a vector
-    let file = File::open(filename).expect("File not found");
-    let content = BufReader::new(file);
-
-    let lines: Vec<String> = content
-        .lines()
-        .map(|line| line.expect("Something went wrong"))
-        .collect();
-
-    //Iterate over lines to index the position where the query is found
-    let lines_iter = lines.iter().enumerate();
-
-    let mut lines_index_break: Vec<usize> = Vec::new();
-    let mut lines_index_date: Vec<usize> = Vec::new();
-    let mut lines_index_cancelled: Vec<usize> = Vec::new();
-
-    
-    for (pos, e) in lines_iter {
-        if e.contains("---") {
-            lines_index_break.push(pos);
-            //println!("Element at position {}: {:?}", pos, e);
-        } else if e.contains("DATE") {
-            lines_index_date.push(pos);
-            //println!("Element at position {}: {:?}", pos, e);
-        } else if e.contains("CANCELLED") {
-            lines_index_cancelled.push(pos);
-            //println!("Element at position {}: {:?}", pos, e);
-        }
+    for r in result {
+        match r {
+            Err(e) => print!("Error occurred! {}", e.to_string()),
+            Ok(s) => print!("Success: {}", &s),
         };
+    }
 
-        let date = &lines[lines_index_date[0]].trim()[6..];
+    let lines = open_file_lines(filename);
+
+    let index = Indeces::search(&lines);
+
+    //Iterate over lines to find the required breaks in the file to segregate data to be extracted
+//    let lines_iter = lines.iter().enumerate();
+//
+//    let mut index.breaks: Vec<usize> = Vec::new();
+//    let mut index.date: Vec<usize> = Vec::new();
+//    let mut index.cancelled: Vec<usize> = Vec::new();
+//
+//    
+//    for (pos, e) in lines_iter {
+//        if e.contains("---") {
+//            index.breaks.push(pos);
+//            //println!("Element at position {}: {:?}", pos, e);
+//        } else if e.contains("DATE") {
+//            index.date.push(pos);
+//            //println!("Element at position {}: {:?}", pos, e);
+//        } else if e.contains("CANCELLED") {
+//            index.cancelled.push(pos);
+//            //println!("Element at position {}: {:?}", pos, e);
+//        }
+//        };
+//
+        let date = &lines[index.date[0]].trim()[6..];
         println!("{}", date);
 
     //Slice Lines vector to include only licences
     let mut licences_vec: Vec<&str> = Vec::new();
     
-    for i in lines_index_break[1]+1..lines_index_break[2]-2 {
+    for i in index.breaks[1]+1..index.breaks[2]-2 {
         if lines[i].trim().len() > 0 {
             licences_vec.push(&lines[i].trim());
         }
@@ -70,15 +72,15 @@ fn main() {
 
     let mut cancelled_vec_index: Vec<usize> = Vec::new();
 
-    for i in lines_index_break {
-        if i > lines_index_cancelled[0] {
+    for i in index.breaks {
+        if i > index.cancelled[0] {
                     cancelled_vec_index.push(i);
         }
     }
 
     let mut cancelled_vec: Vec<&str> = Vec::new();
     
-    for i in lines_index_cancelled[0]+5..cancelled_vec_index[2]-2 {
+    for i in index.cancelled[0]+5..cancelled_vec_index[2]-2 {
         if lines[i].trim().len() > 0 {
             cancelled_vec.push(&lines[i].trim());
         }
@@ -127,32 +129,6 @@ fn main() {
     };
 
 
-    //println!("{:?}", licence_vec_clean_split);
-
-    //Find empty lines in the licences vector
- //   let mut lines_index_empty: Vec<usize> = Vec::new();
- //   
- //   for (pos, e) in licences_vec.iter().enumerate() {
- //       if e.len() == 0 {
- //           lines_index_empty.push(pos);
- //           //println!("Element at position {}: {:?}", pos, e);
-//
- //       }
- //   };
- //   
- //   //Remove empty lines from the licences vector
- //   let licences_vec_clean = licences_vec.into_iter().filter(|&i| i.len() != 0).collect::<Vec<_>>();
-//
- //   //Iterate over licences_vec_clean vector and split every element by whitespace and push results into a new vector
-//    let mut licence_vec_clean_split: Vec<&str> = Vec::new();
-//
-//    for i in licences_vec {
-//        let mut split_vec: Vec<&str> = i.split("  ").collect();
-//        licence_vec_clean_split.append(&mut split_vec);
-//    };
-//    
-//    let licence_vec_clean_split = licence_vec_clean_split.into_iter().filter(|&i| i.len() != 0).collect::<Vec<_>>();
-
     let number_licences = licence_vec_clean_split.len()/17;
 
     let path_lic = format!("ST1_Licences_{}.csv", date);
@@ -200,9 +176,61 @@ fn main() {
 
     //Print to check
 
-    //println!("{:?}", lines_index_break);
+    //println!("{:?}", index.breaks);
 
     //println!("{:?}", lines_index_empty);
    
     //println!("{:?}", lines);
 }
+
+struct Indeces {
+    breaks: Vec<usize>,
+    date: Vec<usize>,
+    cancelled: Vec<usize>,
+}
+
+impl Indeces {
+    fn search(lines: &Vec<String>) -> Indeces {  
+    
+        let lines_iter = lines.iter().enumerate();
+
+        let mut index_breaks: Vec<usize> = Vec::new();
+        let mut index_date: Vec<usize> = Vec::new();
+        let mut index_cancelled: Vec<usize> = Vec::new();
+        
+        for (pos, e) in lines_iter {
+            if e.contains("---") {
+                index_breaks.push(pos);
+                //println!("Element at position {}: {:?}", pos, e);
+            } else if e.contains("DATE") {
+                index_date.push(pos);
+                //println!("Element at position {}: {:?}", pos, e);
+            } else if e.contains("CANCELLED") {
+                index_cancelled.push(pos);
+                //println!("Element at position {}: {:?}", pos, e);
+            }
+            };
+        
+        let indices = Indeces {
+            breaks: index_breaks,
+            date: index_date,
+            cancelled: index_cancelled,
+        };
+
+        return indices;
+        
+    }
+}
+
+fn open_file_lines(filename: &str) -> Vec<String> {
+    let path = format!("TXT/{}", filename);
+    let file = File::open(path).expect("File not found");
+    let content = BufReader::new(file);
+    let lines: Vec<String> = content
+    .lines()
+    .map(|line| line.expect("Something went wrong"))
+    .collect();
+
+    lines
+}
+
