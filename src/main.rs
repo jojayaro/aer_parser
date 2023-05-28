@@ -73,20 +73,17 @@ fn extract_licences_lines(lines: &Vec<String>, breaks: Vec<usize>) -> Vec<String
 
     licences_lines
 }
-fn find_every_5th_row(lines: &Vec<String>) -> Vec<usize> {
-    let mut every_5th_row: Vec<usize> = Vec::new();
+
+fn extract_license(lines: Vec<String>, date: String) -> Vec<License> {
+    let mut licences: Vec<License> = Vec::new();
+
+    let mut index: Vec<usize> = Vec::new();
 
     for (pos, e) in lines.iter().enumerate() {
         if pos % 5 == 0 {
-            every_5th_row.push(pos);
+            index.push(pos);
         }
     }
-
-    every_5th_row
-}
-
-fn extract_license(lines: Vec<String>, index: Vec<usize>, date: String) -> Vec<License> {
-    let mut licences: Vec<License> = Vec::new();
 
     for i in index {
         licences.push(License {
@@ -198,9 +195,7 @@ async fn main() {
 
     let licences_lines = extract_licences_lines(&lines_trimmed, index.breaks);
 
-    let rows = find_every_5th_row(&licences_lines);
-
-    let licences = extract_license(licences_lines, rows, date.to_string());
+    let licences = extract_license(licences_lines, date.to_string());
 
     write_licence_to_csv(licences, filename);
 
