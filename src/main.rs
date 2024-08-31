@@ -1,8 +1,10 @@
 use std::env;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{BufReader, BufRead, Write};
+use chrono::{NaiveDate, Duration};
 use reqwest;
 use serde::{Serialize, Deserialize};
+use std::path::Path;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct License {
@@ -40,16 +42,32 @@ async fn download_file(filename: String) -> Result<(), Box<dyn std::error::Error
     Ok(())
 }
 
-fn open_file_lines(filename: &str) -> Vec<String> {
-    let path = format!("TXT/WELLS{}.TXT", filename);
-    let file = File::open(path).expect("File not found");
+async fn download_files_by_date_range(start_date: NaiveDate, end_date: NaiveDate) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    let mut downloaded_files = Vec::new();
+    let mut current_date = start_date;
+
+    while current_date <= end_date {
+        let filename = current_date.format("%m%d").to_string();
+        download_file(filename.clone()).await?;
+        downloaded_files.push(filename);
+        current_date += Duration::days(1);
+    }
+
+    Ok(downloaded_files)
+}
+
+fn open_file_lines(filename: &str) -> Result<Vec<String>, std::io::Error> {
+    let path = if filename.starts_with("WELLS") {
+        filename.to_string()
+    } else {
+        format!("TXT/WELLS{}.TXT", filename)
+    };
+    let file = File::open(&path)?;
     let content = BufReader::new(file);
     let lines: Vec<String> = content
         .lines()
-        .map(|line| line.expect("Something went wrong"))
-        .collect();
-
-    lines
+        .collect::<Result<_, _>>()?;
+    Ok(lines)
 }
 
 fn trim_and_remove_empty_lines(lines: Vec<String>) -> Vec<String> {
@@ -79,7 +97,7 @@ fn extract_license(lines: Vec<String>, date: String) -> Vec<License> {
 
     let mut index: Vec<usize> = Vec::new();
 
-    for (pos, e) in lines.iter().enumerate() {
+    for (pos, _) in lines.iter().enumerate() {
         if pos % 5 == 0 {
             index.push(pos);
         }
@@ -112,7 +130,16 @@ fn extract_license(lines: Vec<String>, date: String) -> Vec<License> {
 }
 
 fn write_licence_to_csv(licences: Vec<License>, filename: &str) {
-    let mut wtr = csv::Writer::from_path(format!("CSV/WELLS{}.csv", filename)).expect("Unable to create csv file");
+    let output_filename = if filename.starts_with("WELLS") && filename.ends_with(".TXT") {
+        &filename[..filename.len() - 4]
+    } else if !filename.starts_with("WELLS") {
+        &format!("WELLS{}", filename)[..filename.len() + 5]
+    } else {
+        filename
+    };
+    
+    let mut wtr = csv::Writer::from_path(format!("CSV/{}.csv", output_filename))
+        .expect("Unable to create csv file");
 
     for licence in licences {
         wtr.serialize(licence).expect("Unable to write licence to csv file");
@@ -122,81 +149,105 @@ fn write_licence_to_csv(licences: Vec<License>, filename: &str) {
 }
 
 #[derive(Debug)]
-struct Indeces {
+struct Indices {
     breaks: Vec<usize>,
     date: Vec<usize>,
-    cancelled: Vec<usize>,
-    amendments: Vec<usize>,
-    updates: Vec<usize>,
 }
 
-impl Indeces {
-    fn search(lines: &Vec<String>) -> Indeces {  
-    
-        let lines_iter = lines.iter().enumerate();
-
+impl Indices {
+    fn search(lines: &Vec<String>) -> Indices {  
         let mut index_breaks: Vec<usize> = Vec::new();
         let mut index_date: Vec<usize> = Vec::new();
-        let mut index_cancelled: Vec<usize> = Vec::new();
-        let mut index_amendments: Vec<usize> = Vec::new();
-        let mut index_updates: Vec<usize> = Vec::new();
         
-        for (pos, e) in lines_iter {
-            if e.contains("---") {
+        for (pos, line) in lines.iter().enumerate() {
+            if line.contains("---") {
                 index_breaks.push(pos);
-                //println!("Element at position {}: {:?}", pos, e);
-            } else if e.contains("DATE") {
+            } else if line.contains("DATE") {
                 index_date.push(pos);
-                //println!("Element at position {}: {:?}", pos, e);
-            } else if e.contains("CANCELLED") {
-                index_cancelled.push(pos);
-                //println!("Element at position {}: {:?}", pos, e);
-            } else if e.contains("AMENDMENTS") {
-                index_amendments.push(pos);
-                //println!("Element at position {}: {:?}", pos, e);
-            } else if e.contains("UPDATES") {
-                index_updates.push(pos);
-                //println!("Element at position {}: {:?}", pos, e);
             }
         }
         
-        let indices = Indeces {
+        Indices {
             breaks: index_breaks,
             date: index_date,
-            cancelled: index_cancelled,
-            amendments: index_amendments,
-            updates: index_updates,
-        };
-
-        indices
-        
+        }
     }
 }
 
+fn process_file(filename: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let lines = open_file_lines(filename)?;
+    let lines_trimmed = trim_and_remove_empty_lines(lines);
+    let index = Indices::search(&lines_trimmed);
+    let date = &lines_trimmed[index.date[0]].trim()[6..];
+    let licences_lines = extract_licences_lines(&lines_trimmed, index.breaks);
+    let licences = extract_license(licences_lines, date.to_string());
+    write_licence_to_csv(licences, filename);
+    Ok(())
+}
 
+fn process_folder(folder_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let folder = Path::new(folder_path);
+    if !folder.is_dir() {
+        return Err(format!("{} is not a valid directory", folder_path).into());
+    }
+
+    for entry in fs::read_dir(folder)? {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_file() && path.extension().and_then(|s| s.to_str()) == Some("TXT") {
+            if let Some(filename) = path.file_name().and_then(|s| s.to_str()) {
+                if filename.starts_with("WELLS") {
+                    process_file(filename)?;
+                }
+            }
+        }
+    }
+    Ok(())
+}
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
 
-    let filename = &args[1];
+    if args.len() < 2 {
+        eprintln!("Usage: {} <file|folder|date_range> [args...]", args[0]);
+        std::process::exit(1);
+    }
 
-    println!("In file {}", filename);
+    match args[1].as_str() {
+        "file" => {
+            if args.len() != 3 {
+                eprintln!("Usage: {} file <filename>", args[0]);
+                std::process::exit(1);
+            }
+            let filename = &args[2];
+            process_file(filename)?;
+        }
+        "folder" => {
+            if args.len() != 3 {
+                eprintln!("Usage: {} folder <folder_path>", args[0]);
+                std::process::exit(1);
+            }
+            let folder_path = &args[2];
+            process_folder(folder_path)?;
+        }
+        "date_range" => {
+            if args.len() != 4 {
+                eprintln!("Usage: {} date_range <start_date> <end_date>", args[0]);
+                std::process::exit(1);
+            }
+            let start_date = NaiveDate::parse_from_str(&args[2], "%Y-%m-%d")?;
+            let end_date = NaiveDate::parse_from_str(&args[3], "%Y-%m-%d")?;
+            let downloaded_files = download_files_by_date_range(start_date, end_date).await?;
+            for filename in downloaded_files {
+                process_file(&filename)?;
+            }
+        }
+        _ => {
+            eprintln!("Invalid option. Use 'file', 'folder', or 'date_range'.");
+            std::process::exit(1);
+        }
+    }
 
-    //download_file(filename.to_string()).await.unwrap();
-
-    let lines = open_file_lines(filename);
-
-    let lines_trimmed = trim_and_remove_empty_lines(lines);
-
-    let index = Indeces::search(&lines_trimmed);
-
-    let date = &lines_trimmed[index.date[0]].trim()[6..];
-
-    let licences_lines = extract_licences_lines(&lines_trimmed, index.breaks);
-
-    let licences = extract_license(licences_lines, date.to_string());
-
-    write_licence_to_csv(licences, filename);
-
+    Ok(())
 }

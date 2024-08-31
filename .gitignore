@@ -1,3 +1,5 @@
 /target
 ST1*
-text.txt
+text.txt# pixi environments
+.pixi
+*.egg-info
