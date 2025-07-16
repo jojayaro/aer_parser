@@ -4,16 +4,304 @@
                                                                                                         
                                                                                                         
 
-    DATE: 21 May 2022                                                                                   
+    DATE:  21 May 2025                                                                                  
                                                                                                         
 
     --------------------------------------------------------------------------------------------        
     WELL NAME               LICENCE NUMBER         MINERAL RIGHTS       GROUND ELEVATION                
     UNIQUE IDENTIFIER       SURFACE CO-ORDINATES   AER FIELD CENTRE     PROJECTED DEPTH                 
     AER CLASSIFICATION      FIELD                                       TERMINATING ZONE                
-    DRILLING OPERATION      WELL PURPOSE           WELL  TYPE           SUBSTANCE                       
+    DRILLING OPERATION      WELL PURPOSE           WELL TYPE            SUBSTANCE                       
     LICENSEE                                                            SURFACE LOCATION                
     --------------------------------------------------------------------------------------------        
+
+    PEYTO EDSON 3-4-53-19                0518657   ALBERTA CROWN        966.00M               
+    100/03-04-053-19W5/00  N   60.1M  W  798.2M    DRAYTON VALLEY       5725.0M             
+    DEV (C)                              EDSON                          FALHER MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    PEYTO EXPLORATION & DEVELOPMENT CORP.                               02-16-053-19W5                  
+                                                                                                        
+    COPRC 104WBI17 RSDLN 7-26-83-7       0518658   ALBERTA CROWN        604.90M               
+    112/07-26-083-07W4/00  N  753.7M  E  248.9M    FORT MCMURRAY        2240.0M             
+    DSW (NC)                             RESDELN                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    CONOCOPHILLIPS CANADA RESOURCES CORP.                               05-24-083-07W4                  
+                                                                                                        
+    PEYTO EDSON 2-4-53-19                0518659   ALBERTA CROWN        966.00M               
+    100/02-04-053-19W5/00  N   60.1M  W  788.4M    DRAYTON VALLEY       5725.0M             
+    DEV (C)                              EDSON                          FALHER MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    PEYTO EXPLORATION & DEVELOPMENT CORP.                               02-16-053-19W5                  
+                                                                                                        
+    PEYTO EDSON 3-9-53-19                0518660   ALBERTA CROWN        966.00M               
+    100/03-09-053-19W5/00  N   60.1M  W  793.3M    DRAYTON VALLEY       4150.0M             
+    DEV (NC)                             EDSON                          NOTIKEWIN MBR                   
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    PEYTO EXPLORATION & DEVELOPMENT CORP.                               02-16-053-19W5                  
+                                                                                                        
+    SPL 1-15 102 NIPISI 5-13-77-7        0518661   ALBERTA CROWN        722.60M               
+    102/05-13-077-07W5/00  N   32.1M  W  181.8M    SLAVE LAKE           2800.0M             
+    DSW (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    SPL 1-15 102 NIPISI 7-16-77-7        0518662   ALBERTA CROWN        722.60M               
+    102/07-16-077-07W5/00  N   39.3M  W  194.0M    SLAVE LAKE           2800.0M             
+    DSW (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    SPL 1-15 103 NIPISI 2-16-77-7        0518663   ALBERTA CROWN        722.70M               
+    103/02-16-077-07W5/00  N   29.6M  W  191.5M    SLAVE LAKE           2800.0M             
+    DSW (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    SPL 1-15 103 NIPISI 4-13-77-7        0518664   ALBERTA CROWN        722.80M               
+    103/04-13-077-07W5/00  N   12.7M  W  176.8M    SLAVE LAKE           2800.0M             
+    DSW (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    SPL 1-15 104 NIPISI 15-9-77-7        0518665   ALBERTA CROWN        723.30M               
+    104/15-09-077-07W5/00  N     .5M  W  184.0M    SLAVE LAKE           2800.0M             
+    DSW (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    SPL 1-15 104 NIPISI 2-16-77-7        0518666   ALBERTA CROWN        722.50M               
+    104/02-16-077-07W5/00  N   41.8M  W  184.3M    SLAVE LAKE           2800.0M             
+    DSW (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    SPL 1-15 104 NIPISI 4-13-77-7        0518667   ALBERTA CROWN        722.80M               
+    104/04-13-077-07W5/00  N   22.4M  W  179.3M    SLAVE LAKE           2800.0M             
+    DSW (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    SPL 1-15 105 NIPISI 15-9-77-7        0518668   ALBERTA CROWN        722.90M               
+    105/15-09-077-07W5/00  N   10.2M  W  186.5M    SLAVE LAKE           2800.0M             
+    DSW (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    SPL 1-15 106 NIPISI 15-9-77-7        0518669   ALBERTA CROWN        722.70M               
+    106/15-09-077-07W5/00  N   19.9M  W  189.0M    SLAVE LAKE           2800.0M             
+    DSW (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    SPL 1-15 103 NIPISI 13-12-77-7       0518670   ALBERTA CROWN        722.90M               
+    103/13-12-077-07W5/00  N    3.0M  W  174.4M    SLAVE LAKE           2800.0M             
+    DSW (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    CVE W26P06-2 FISHER 6-27-70-5        0518671   ALBERTA CROWN        669.70M               
+    115/06-27-070-05W4/00  S  672.5M  W  654.3M    BONNYVILLE           1710.0M             
+    DEV (NC)                             FISHER                         MCMURRAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CENOVUS ENERGY INC.                                                 10-22-070-05W4                  
+                                                                                                        
+    COPRC 104WBI18 RSDLN 7-26-83-7       0518672   ALBERTA CROWN        604.90M               
+    113/07-26-083-07W4/00  N  759.4M  E  254.6M    FORT MCMURRAY        2275.0M             
+    DSW (NC)                             RESDELN                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    CONOCOPHILLIPS CANADA RESOURCES CORP.                               05-24-083-07W4                  
+                                                                                                        
+    SPL 1F1 NIPISI 1-15-77-7             0518673   ALBERTA CROWN        722.60M               
+    1F1/01-15-077-07W5/00  N   51.4M  W  186.8M    SLAVE LAKE           615.0M             
+    OTH (NC)                             NIPISI                         CLEARWATER FM                   
+    VERTICAL                             NEW       PRODUCTION           WATER                           
+    SPUR PETROLEUM LTD.                                                 01-15-077-07W5                  
+                                                                                                        
+    SATURNOIL HZ  BRAZR 2-32-47-11       0518674   ALBERTA CROWN        944.30M               
+    100/02-32-047-11W5/00  N  161.5M  W  353.7M    DRAYTON VALLEY       5270.0M             
+    DEV (NC)                             BRAZEAU RIVER                  CARDIUM FM                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SATURN OIL & GAS INC.                                               01-08-048-11W5                  
+                                                                                                        
+    COPRC 104WBP20 RSDLN 10-26-83-7      0518675   ALBERTA CROWN        604.90M               
+    102/10-26-083-07W4/00  N  749.9M  E  287.1M    FORT MCMURRAY        2430.0M             
+    DEV (NC)                             RESDELN                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CONOCOPHILLIPS CANADA RESOURCES CORP.                               05-24-083-07W4                  
+                                                                                                        
+    COPRC 104WBI20 RSDLN 10-26-83-7      0518676   ALBERTA CROWN        604.90M               
+    103/10-26-083-07W4/00  N  770.8M  E  265.9M    FORT MCMURRAY        2413.0M             
+    DSW (NC)                             RESDELN                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    CONOCOPHILLIPS CANADA RESOURCES CORP.                               05-24-083-07W4                  
+                                                                                                        
+    SURGE ENERGY INC PROVOST 6-11-39-3   0518677   ALBERTA CROWN        665.70M               
+    100/06-11-039-03W4/00  S  649.6M  W  612.3M    WAINWRIGHT           2800.0M             
+    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SURGE ENERGY INC.                                                   10-14-039-03W4                  
+                                                                                                        
+    SURGE ENERGY INC 2 PROVOST 6-11-39-3 0518678   ALBERTA CROWN        665.60M               
+    102/06-11-039-03W4/00  S  649.6M  W  597.3M    WAINWRIGHT           2900.0M             
+    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SURGE ENERGY INC.                                                   10-14-039-03W4                  
+                                                                                                        
+    SURGE ENERGY INC 2 PROVOST 7-11-39-3 0518679   ALBERTA CROWN        665.20M               
+    102/07-11-039-03W4/00  S  649.6M  W  580.3M    WAINWRIGHT           2750.0M             
+    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SURGE ENERGY INC.                                                   10-14-039-03W4                  
+                                                                                                        
+    SURGE ENERGY INC 3 PROVOST 7-11-39-3 0518680   ALBERTA CROWN        665.60M               
+    103/07-11-039-03W4/00  S  649.5M  W  627.3M    WAINWRIGHT           2750.0M             
+    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SURGE ENERGY INC.                                                   10-14-039-03W4                  
+                                                                                                        
+    SURGE ENERGY INC 2 PROVOST 8-11-39-3 0518681   ALBERTA CROWN        665.20M               
+    102/08-11-039-03W4/00  S  649.5M  W  657.3M    WAINWRIGHT           3100.0M             
+    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SURGE ENERGY INC.                                                   10-14-039-03W4                  
+                                                                                                        
+    SURGE ENERGY INC 3 PROVOST 8-11-39-3 0518682   ALBERTA CROWN        665.40M               
+    103/08-11-039-03W4/00  S  649.5M  W  642.3M    WAINWRIGHT           2900.0M             
+    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SURGE ENERGY INC.                                                   10-14-039-03W4                  
+                                                                                                        
+    TOURMALINE HZ FARMTON 15-9-81-11     0518683   ALBERTA CROWN        656.30M               
+    100/15-09-081-11W6/00  S  314.7M  E   70.0M    GRANDE PRAIRIE       5000.0M             
+    DEV (NC)                             UNDEFINED                      CHARLIE LAKE FM                 
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    TOURMALINE OIL CORP.                                                13-11-081-11W6                  
+                                                                                                        
+    TOURMALINE 102 HZ BONANZA 13-7-81-10 0518684   ALBERTA CROWN        656.50M               
+    100/13-07-081-10W6/00  S  323.4M  E   70.0M    GRANDE PRAIRIE       5500.0M             
+    DEV (NC)                             BONANZA                        CHARLIE LAKE FM                 
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    TOURMALINE OIL CORP.                                                13-11-081-11W6                  
+                                                                                                        
+    CVE 2D LLOYD 2-29-51-1               0518685   ALBERTA CROWN        642.20M               
+    100/02-29-051-01W4/00  N  102.2M  W  497.3M    WAINWRIGHT           900.0M             
+    DEV (NC)                             LLOYDMINSTER                   GENERAL PETROLEUM MBR           
+    DIRECTIONAL                          NEW       PRODUCTION           CRUDE OIL                       
+    CENOVUS ENERGY INC.                                                 02-29-051-01W4                  
+                                                                                                        
+    CVE 3D LLOYD 3-29-51-1               0518686   ALBERTA CROWN        642.10M               
+    102/03-29-051-01W4/00  N   89.2M  W  497.3M    WAINWRIGHT           900.0M             
+    DEV (NC)                             LLOYDMINSTER                   GENERAL PETROLEUM MBR           
+    DIRECTIONAL                          NEW       PRODUCTION           CRUDE OIL                       
+    CENOVUS ENERGY INC.                                                 02-29-051-01W4                  
+                                                                                                        
+    RIDGELINE HZ VIK-KINS 12-35-45-9     0518687   BOTH                 715.30M               
+    100/12-35-045-09W4/00  N   60.0M  W   75.2M    WAINWRIGHT           3000.0M             
+    DEV (C)                              VIKING-KINSELLA                REX MBR                         
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    RIDGELINE EXPLORATION INC.                                          01-10-046-09W4                  
+                                                                                                        
+    BIRCHCLIFF HZ PCOUPES 5-8-77-12      0518688   ALBERTA CROWN        784.30M               
+    100/05-08-077-12W6/00  N  100.9M  W  746.5M    GRANDE PRAIRIE       4722.0M             
+    DEV (C)                              POUCE COUPE SOUTH              MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    BIRCHCLIFF ENERGY LTD.                                              02-09-077-12W6                  
+                                                                                                        
+    BIRCHCLIFF HZ PCOUPES 13-9-77-12     0518689   ALBERTA CROWN        784.20M               
+    100/13-09-077-12W6/00  N  150.9M  W  747.7M    GRANDE PRAIRIE       4069.0M             
+    DEV (C)                              POUCE COUPE SOUTH              MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    BIRCHCLIFF ENERGY LTD.                                              02-09-077-12W6                  
+                                                                                                        
+    BIRCHCLIFF HZ PCOUPES 14-8-77-12     0518690   ALBERTA CROWN        784.30M               
+    100/14-08-077-12W6/00  N  130.9M  W  747.2M    GRANDE PRAIRIE       4771.0M             
+    DEV (C)                              POUCE COUPE SOUTH              MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    BIRCHCLIFF ENERGY LTD.                                              02-09-077-12W6                  
+                                                                                                        
+    BIRCHCLIFF HZ PCOUPES 15-8-77-12     0518691   ALBERTA CROWN        784.20M               
+    100/15-08-077-12W6/00  N  140.9M  W  747.4M    GRANDE PRAIRIE       4402.0M             
+    DEV (C)                              POUCE COUPE SOUTH              MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    BIRCHCLIFF ENERGY LTD.                                              02-09-077-12W6                  
+                                                                                                        
+    BIRCHCLIFF HZ PCOUPES 16-7-77-12     0518692   ALBERTA CROWN        784.40M               
+    100/16-07-077-12W6/00  N  110.9M  W  746.7M    GRANDE PRAIRIE       5180.0M             
+    DEV (C)                              POUCE COUPE SOUTH              MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    BIRCHCLIFF ENERGY LTD.                                              02-09-077-12W6                  
+                                                                                                        
+    BIRCHCLIFF HZ 102 PCOUPES 13-8-77-12 0518693   ALBERTA CROWN        784.30M               
+    102/13-08-077-12W6/00  N  120.9M  W  747.0M    GRANDE PRAIRIE       5175.0M             
+    DEV (C)                              POUCE COUPE SOUTH              MONTNEY FM                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    BIRCHCLIFF ENERGY LTD.                                              02-09-077-12W6                  
+                                                                                                        
+    KIWETINOHKENERGY HZ SIMON 3-27-62-25 0518694   ALBERTA CROWN        1071.30M               
+    100/03-27-062-25W5/00  S  590.2M  W  365.5M    GRANDE PRAIRIE       9000.0M             
+    DEV (NC)                             SIMONETTE                      DUVERNAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    KIWETINOHK ENERGY CORP.                                             09-11-062-25W5                  
+                                                                                                        
+    KIWETINOHKENERGY HZ SIMON 7-27-62-25 0518695   ALBERTA CROWN        1071.30M               
+    100/07-27-062-25W5/00  S  600.2M  W  365.4M    GRANDE PRAIRIE       9300.0M             
+    DEV (NC)                             SIMONETTE                      DUVERNAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    KIWETINOHK ENERGY CORP.                                             09-11-062-25W5                  
+                                                                                                        
+    KIWETINOHKENERGY SIMON 13-22-62-25   0518696   ALBERTA CROWN        1071.20M               
+    100/13-22-062-25W5/00  S  580.2M  W  365.6M    GRANDE PRAIRIE       8700.0M             
+    DEV (NC)                             SIMONETTE                      DUVERNAY FM                     
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    KIWETINOHK ENERGY CORP.                                             09-11-062-25W5                  
+                                                                                                        
+    CNRL HZ WAPITI 13-24-65-8            0518697   ALBERTA CROWN        1023.00M               
+    100/13-24-065-08W6/00  N     .8M  E  786.0M    GRANDE PRAIRIE       5901.0M             
+    DEV (NC)                             WAPITI                         FALHER MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    CANADIAN NATURAL RESOURCES LIMITED                                  03-13-065-08W6                  
+                                                                                                        
+    CNRL HZ WAPITI 15-24-65-8            0518698   ALBERTA CROWN        1023.40M               
+    100/15-24-065-08W6/00  N    6.8M  E  794.0M    GRANDE PRAIRIE       5696.0M             
+    DEV (NC)                             WAPITI                         FALHER MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    CANADIAN NATURAL RESOURCES LIMITED                                  03-13-065-08W6                  
+                                                                                                        
+    CNRL HZ WAPITI 16-24-65-8            0518699   ALBERTA CROWN        1023.40M               
+    100/16-24-065-08W6/00  N   12.8M  E  802.0M    GRANDE PRAIRIE       5930.0M             
+    DEV (NC)                             WAPITI                         FALHER MBR                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    CANADIAN NATURAL RESOURCES LIMITED                                  03-13-065-08W6                  
+                                                                                                        
+    TOURMALINE HZ WILD RIV 13-30-57-25   0518700   ALBERTA CROWN        1237.60M               
+    100/13-30-057-25W5/00  S  714.9M  W 1624.3M    DRAYTON VALLEY       6400.0M             
+    DEV (NC)                             WILD RIVER                     SPIRIT RIVER FM                 
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    TOURMALINE OIL CORP.                                                12-28-057-25W5                  
+                                                                                                        
+    TOURMALINE 02HZ WILD RIV 12-30-57-25 0518701   ALBERTA CROWN        1237.90M               
+    102/12-30-057-25W5/00  S  714.7M  W 1619.5M    DRAYTON VALLEY       6200.0M             
+    DEV (NC)                             WILD RIVER                     SPIRIT RIVER FM                 
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    TOURMALINE OIL CORP.                                                12-28-057-25W5                  
+                                                                                                        
+    TOURMALINE HZ WILD RIV 5-30-57-25    0518702   ALBERTA CROWN        1237.80M               
+    100/05-30-057-25W5/00  S  714.5M  W 1614.6M    DRAYTON VALLEY       6350.0M             
+    DEV (NC)                             WILD RIVER                     SPIRIT RIVER FM                 
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    TOURMALINE OIL CORP.                                                12-28-057-25W5                  
+                                                                                                        
+    WELL LICENCES UPDATED
+    ---------------------------
+
+    WELL NAME AND U.I.D.                LICENCE NO.  AMENDED TO READ
+    --------------------                -----------  ---------------
+
+    WSE WD ATMORE 14-23-67-18              0497835   SURFACE LOCATION:                                  
+    100/14-23-067-18W4/00                            11-23-067-18W4                                     
+
+    WSE HZ ATMORE 1-27-67-18               0497993   SURFACE LOCATION:                                  
+    100/01-27-067-18W4/00                            11-23-067-18W4                                     
 
 
     -------------------- END OF WELL LICENCES DAILY LIST  -------------------- 

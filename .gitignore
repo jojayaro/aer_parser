@@ -1,5 +1,7 @@
 /target
-ST1*
-text.txt# pixi environments
-.pixi
-*.egg-info
+/python
+/zip
+/CSV
+/TXT
+]*.egg-info
+.gitignore

@@ -4,142 +4,373 @@
                                                                                                         
                                                                                                         
 
-    DATE: 20 May 2022                                                                                   
+    DATE:  20 May 2025                                                                                  
                                                                                                         
 
     --------------------------------------------------------------------------------------------        
     WELL NAME               LICENCE NUMBER         MINERAL RIGHTS       GROUND ELEVATION                
     UNIQUE IDENTIFIER       SURFACE CO-ORDINATES   AER FIELD CENTRE     PROJECTED DEPTH                 
     AER CLASSIFICATION      FIELD                                       TERMINATING ZONE                
-    DRILLING OPERATION      WELL PURPOSE           WELL  TYPE           SUBSTANCE                       
+    DRILLING OPERATION      WELL PURPOSE           WELL TYPE            SUBSTANCE                       
     LICENSEE                                                            SURFACE LOCATION                
     --------------------------------------------------------------------------------------------        
 
-    BAYTEX HZ COLDLK 13-20-63-3          0504299   FREEHOLD             555M                            
-    100/13-20-063-03W4/00  S  225.0M  E  105.5M    BONNYVILLE           2200.0M                         
-    DEV (C)                              COLD LAKE                      LLOYDMINSTER MBR                
+    COPRC 104WBP19 RSDLN 7-26-83-7       0518621   ALBERTA CROWN        604.90M               
+    107/07-26-083-07W4/00  N  707.9M  E  203.6M    FORT MCMURRAY        2350.0M             
+    DEV (NC)                             RESDELN                        MCMURRAY FM                     
     HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
-    BAYTEX ENERGY LTD.                                                  13-17-063-03W4                  
+    CONOCOPHILLIPS CANADA RESOURCES CORP.                               05-24-083-07W4                  
                                                                                                         
-    BAYTEX HZ 102 COLDLK 13-20-63-3      0504300   FREEHOLD             555.1M                          
-    102/13-20-063-03W4/00  S  225.0M  E  120.5M    BONNYVILLE           2200.0M                         
-    DEV (C)                              COLD LAKE                      REX MBR                         
+    VEI HZ PEMBINA 4-21-44-11            0518622   ALBERTA CROWN        970.70M               
+    100/04-21-044-11W5/00  N  519.6M  W  311.5M    DRAYTON VALLEY       5500.0M             
+    DEV (C)                              PEMBINA                        UPPER MANNVILLE FM              
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    VERMILION ENERGY INC.                                               08-28-044-11W5                  
+                                                                                                        
+    VEI HZ PEMBINA 9-26-44-11            0518623   ALBERTA CROWN        970.70M               
+    100/09-26-044-11W5/00  N  528.4M  W  316.3M    DRAYTON VALLEY       6250.0M             
+    DEV (C)                              PEMBINA                        UPPER MANNVILLE FM              
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    VERMILION ENERGY INC.                                               08-28-044-11W5                  
+                                                                                                        
+    SPARTAN DELTA HZ WILLGR 16-26-44-9   0518624   ALBERTA CROWN        973.90M               
+    100/16-26-044-09W5/00  N  336.4M  W  387.1M    RED DEER             6232.0M             
+    DEV (NC)                             WILLESDEN GREEN                CARDIUM FM                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    SPARTAN DELTA CORP.                                                 01-14-044-09W5                  
+                                                                                                        
+    CNRL G6P RD LEISMER 5-33-75-6        0518625   ALBERTA CROWN        607.70M               
+    113/05-33-075-06W4/00  S  601.5M  W  115.2M    BONNYVILLE           1777.0M             
+    DEV (NC)                             LEISMER                        MCMURRAY FM                     
     HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
-    BAYTEX ENERGY LTD.                                                  13-17-063-03W4                  
+    CANADIAN NATURAL RESOURCES LIMITED                                  09-29-075-06W4                  
                                                                                                         
-    BAYTEX HZ 103 COLDLK 13-20-63-3      0504301   FREEHOLD             554.8M                          
-    103/13-20-063-03W4/00  S  225.0M  E  135.5M    BONNYVILLE           2200.0M                         
-    DEV (C)                              COLD LAKE                      GENERAL PETROLEUM MBR           
+    CNRL G6I RD LEISMER 5-33-75-6        0518626   ALBERTA CROWN        607.70M               
+    114/05-33-075-06W4/00  S  547.4M  W  100.6M    BONNYVILLE           1697.0M             
+    DSW (NC)                             LEISMER                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    CANADIAN NATURAL RESOURCES LIMITED                                  09-29-075-06W4                  
+                                                                                                        
+    COPRC 104WBI13 RSDLN 7-26-83-7       0518627   ALBERTA CROWN        604.90M               
+    108/07-26-083-07W4/00  N  730.8M  E  226.3M    FORT MCMURRAY        2030.0M             
+    DSW (NC)                             RESDELN                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    CONOCOPHILLIPS CANADA RESOURCES CORP.                               05-24-083-07W4                  
+                                                                                                        
+    COPRC 104WBI14 RSDLN 7-26-83-7       0518628   ALBERTA CROWN        604.90M               
+    109/07-26-083-07W4/00  N  736.5M  E  231.9M    FORT MCMURRAY        2070.0M             
+    DSW (NC)                             RESDELN                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    CONOCOPHILLIPS CANADA RESOURCES CORP.                               05-24-083-07W4                  
+                                                                                                        
+    CNRL 15D HZ FORSYTH 15-11-62-7       0518629   ALBERTA CROWN        548.80M               
+    100/15-11-062-07W4/00  N   80.0M  W  795.5M    BONNYVILLE           2040.0M             
+    DEV (NC)                             FORSYTH                        SPARKY MBR                      
     HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
-    BAYTEX ENERGY LTD.                                                  13-17-063-03W4                  
+    CANADIAN NATURAL RESOURCES LIMITED                                  02-23-062-07W4                  
                                                                                                         
-    HEMISPHERE 4A-30 ATL-BUFF 3-30-21-5  0504302   ALBERTA CROWN        715.4M                          
-    102/03-30-021-05W4/00  N  186.1M  E   50.0M    MEDICINE HAT         1532.0M                         
-    DEV (NC)                             ATLEE-BUFFALO                  MANNVILLE GRP                   
+    CNRL 14B HZ FORSYTH 14-11-62-7       0518630   ALBERTA CROWN        548.80M               
+    100/14-11-062-07W4/00  N   80.0M  E  757.5M    BONNYVILLE           2250.0M             
+    DEV (NC)                             FORSYTH                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  03-23-062-07W4                  
+                                                                                                        
+    CNRL 1A HZ FORSYTH 1-15-62-7         0518631   ALBERTA CROWN        548.80M               
+    100/01-15-062-07W4/00  N   80.0M  E  747.5M    BONNYVILLE           2180.0M             
+    DEV (NC)                             FORSYTH                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  03-23-062-07W4                  
+                                                                                                        
+    CNRL 7B HZ FORSYTH 7-15-62-7         0518632   ALBERTA CROWN        548.80M               
+    100/07-15-062-07W4/00  N   80.0M  E  737.5M    BONNYVILLE           2120.0M             
+    DEV (NC)                             FORSYTH                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  03-23-062-07W4                  
+                                                                                                        
+    CNRL 10C HZ FORSYTH 10-15-62-7       0518633   ALBERTA CROWN        548.80M               
+    100/10-15-062-07W4/00  N   80.0M  E  727.5M    BONNYVILLE           1880.0M             
+    DEV (NC)                             FORSYTH                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  03-23-062-07W4                  
+                                                                                                        
+    SUNCOR ML25-GT334-MR1-SI 11-6-91-8   0518634   ALBERTA CROWN        450.00M               
+    100/11-06-091-08W4/00  S  511.2M  E  694.1M    FORT MCMURRAY        147.0M             
+    DSW (NC)                             UNDEFINED                      MCMURRAY FM                     
+    VERTICAL                             NEW       OBSERVATION          NONE                            
+    SUNCOR ENERGY INC.                                                  11-06-091-08W4                  
+                                                                                                        
+    CNRL 15D HZ FORSYTH 15-13-62-7       0518635   ALBERTA CROWN        548.80M               
+    102/15-13-062-07W4/00  N   80.0M  W  765.5M    BONNYVILLE           2180.0M             
+    DEV (NC)                             FORSYTH                        SPARKY MBR                      
+    DIRECTIONAL                          NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  02-23-062-07W4                  
+                                                                                                        
+    CNRL 10C HZ FORSYTH 10-13-62-7       0518636   ALBERTA CROWN        548.80M               
+    100/10-13-062-07W4/00  N   80.0M  W  775.5M    BONNYVILLE           2030.0M             
+    DEV (NC)                             FORSYTH                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  02-23-062-07W4                  
+                                                                                                        
+    CNRL 4C HZ FORSYTH 4-13-62-7         0518637   ALBERTA CROWN        548.80M               
+    100/04-13-062-07W4/00  N   80.0M  W  785.5M    BONNYVILLE           1840.0M             
+    DEV (NC)                             FORSYTH                        SPARKY MBR                      
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  02-23-062-07W4                  
+                                                                                                        
+    CNRL 12D HZ LIND 12-32-54-6          0518638   ALBERTA CROWN        656.20M               
+    100/12-32-054-06W4/00  S   53.2M  E  718.2M    WAINWRIGHT           1780.0M             
+    DEV (NC)                             LINDBERGH                      CUMMINGS MBR                    
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  14-29-054-06W4                  
+                                                                                                        
+    CNRL 16D HZ LIND 16-32-54-6          0518639   ALBERTA CROWN        656.80M               
+    100/16-32-054-06W4/00  S   63.2M  E  718.2M    WAINWRIGHT           2455.0M             
+    DEV (NC)                             LINDBERGH                      CUMMINGS MBR                    
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  14-29-054-06W4                  
+                                                                                                        
+    CNRL 16A HZ  LIND 16-32-54-6         0518640   ALBERTA CROWN        657.10M               
+    102/16-32-054-06W4/00  S   73.2M  E  718.2M    WAINWRIGHT           2275.0M             
+    DEV (NC)                             LINDBERGH                      CUMMINGS MBR                    
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  14-29-054-06W4                  
+                                                                                                        
+    CNRL 14B HZ LIND 14-32-54-6          0518641   ALBERTA CROWN        656.90M               
+    100/14-32-054-06W4/00  S   83.2M  E  718.1M    WAINWRIGHT           1900.0M             
+    DEV (NC)                             LINDBERGH                      CUMMINGS MBR                    
+    HORIZONTAL                           NEW       PRODUCTION (SCHEME)  CRUDE BITUMEN                   
+    CANADIAN NATURAL RESOURCES LIMITED                                  14-29-054-06W4                  
+                                                                                                        
+    NORTH 40 HZ WAYNE 15-15-28-19        0518642   BOTH                 805.60M               
+    103/15-15-028-19W4/00  N  718.7M  E  454.0M    CALGARY              3607.0M             
+    DEV (NC)                             WAYNE-ROSEDALE                 BASAL QUARTZ SD                 
     HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
-    HEMISPHERE ENERGY CORPORATION                                       04-30-021-05W4                  
+    NORTH 40 RESOURCES LTD.                                             06-10-028-19W4                  
                                                                                                         
-    WLEC 2B HZ PROVOST 3-18-40-2         0504303   BOTH                 702.5M                          
-    100/03-18-040-02W4/00  S  279.4M  E  580.5M    WAINWRIGHT           2860.0M                         
-    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    SURGE ENERGY INC PROVOST 12-22-39-2  0518643   ALBERTA CROWN        704.80M               
+    1F1/12-22-039-02W4/00  S  784.8M  W   50.0M    WAINWRIGHT           2200.0M             
+    OTH (NC)                             PROVOST                        DINA MBR                        
+    HORIZONTAL                           NEW       PRODUCTION           WATER                           
+    SURGE ENERGY INC.                                                   09-22-039-02W4                  
+                                                                                                        
+    COPRC 104WBI15 RSDLN 7-26-83-7       0518644   ALBERTA CROWN        604.90M               
+    110/07-26-083-07W4/00  N  742.2M  E  237.6M    FORT MCMURRAY        2125.0M             
+    DSW (NC)                             RESDELN                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    CONOCOPHILLIPS CANADA RESOURCES CORP.                               05-24-083-07W4                  
+                                                                                                        
+    COPRC 104WBI16 RSDLN 7-26-83-7       0518645   ALBERTA CROWN        604.90M               
+    111/07-26-083-07W4/00  N  748.0M  E  243.3M    FORT MCMURRAY        2180.0M             
+    DSW (NC)                             RESDELN                        MCMURRAY FM                     
+    HORIZONTAL                           NEW       INJECTION            WATER                           
+    CONOCOPHILLIPS CANADA RESOURCES CORP.                               05-24-083-07W4                  
+                                                                                                        
+    SPL 16-10 NIPISI 15-9-77-7           0518646   ALBERTA CROWN        724.20M               
+    100/15-09-077-07W5/00  S   42.3M  W  167.9M    SLAVE LAKE           2800.0M             
+    DEV (NC)                             NIPISI                         CLEARWATER FM                   
     HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
-    WEST LAKE ENERGY CORP.                                              14-17-040-02W4                  
+    SPUR PETROLEUM LTD.                                                 16-10-077-07W5                  
                                                                                                         
-    WLEC 2C HZ PROVOST 14-7-40-2         0504304   BOTH                 702.3M                          
-    103/14-07-040-02W4/00  S  299.4M  E  580.6M    WAINWRIGHT           2910.0M                         
-    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    SPL 16-10 NIPISI 2-16-77-7           0518647   ALBERTA CROWN        723.90M               
+    100/02-16-077-07W5/00  S   13.2M  W  175.3M    SLAVE LAKE           2800.0M             
+    DEV (NC)                             NIPISI                         CLEARWATER FM                   
     HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
-    WEST LAKE ENERGY CORP.                                              14-17-040-02W4                  
+    SPUR PETROLEUM LTD.                                                 16-10-077-07W5                  
                                                                                                         
-    WLEC 2C HZ PROVOST 14-7-40-2         0504305   BOTH                 701.6M                          
-    104/14-07-040-02W4/00  S  319.4M  E  580.6M    WAINWRIGHT           2860.0M                         
-    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    SPL 16-10 NIPISI 4-13-77-7           0518648   ALBERTA CROWN        723.90M               
+    100/04-13-077-07W5/00  S   30.1M  W  160.7M    SLAVE LAKE           2800.0M             
+    DEV (NC)                             NIPISI                         CLEARWATER FM                   
     HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
-    WEST LAKE ENERGY CORP.                                              14-17-040-02W4                  
+    SPUR PETROLEUM LTD.                                                 16-10-077-07W5                  
                                                                                                         
-    WLEC 4C HZ PROVOST 11-7-40-2         0504306   BOTH                 700.7M                          
-    108/11-07-040-02W4/00  S  339.4M  E  580.6M    WAINWRIGHT           3050.0M                         
-    DEV (NC)                             PROVOST                        SPARKY MBR                      
+    SPL 16-10 NIPISI 5-13-77-7           0518649   ALBERTA CROWN        723.60M               
+    100/05-13-077-07W5/00  S   10.8M  W  165.7M    SLAVE LAKE           2800.0M             
+    DEV (NC)                             NIPISI                         CLEARWATER FM                   
     HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
-    WEST LAKE ENERGY CORP.                                              14-17-040-02W4                  
+    SPUR PETROLEUM LTD.                                                 16-10-077-07W5                  
                                                                                                         
-    AMENDMENTS OF WELL LICENCES
-    ---------------------------
-
-    WELL NAME AND U.I.D.                LICENCE NO.  AMENDED TO READ
-    --------------------                -----------  ---------------
-
-    PEINC 02 HZ MARTENH 14-1-75-26         0499399   UWI:                                               
-    00/14-01-075-26W4/0                              00/04-12-075-26W4/0                                
-
-                                                     WELL NAME:                                         
-                                                     PERPETUAL ENERGY MARTENH 4-12-75-26                
-
-    PEINC HZ MARTENH 15-1-75-26            0499400   UWI:                                               
-    00/15-01-075-26W4/0                              00/03-12-075-26W4/0                                
-
-                                                     WELL NAME:                                         
-                                                     PERPETUAL ENERGY MARTENH 3-12-75-26                
-
-    SPARTAN DELTA 103 HZ ELM 16-32-69-5    0503198   CATEGORY:                                          
-    103/16-32-069-05W6/00                            C360                                               
-
-                                                     GROUND ELEVATION                                   
-                                                     656.00                                             
-
-                                                     SURFACE CO-ORDINATES:                              
-                                                     N 0447.4 W 0579.8                                  
-
+    SPL 16-10 NIPISI 7-16-77-7           0518650   ALBERTA CROWN        723.20M               
+    100/07-16-077-07W5/00  S    1.1M  W  168.1M    SLAVE LAKE           2800.0M             
+    DEV (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPUR PETROLEUM LTD.                                                 16-10-077-07W5                  
+                                                                                                        
+    SPL 16-10 102 NIPISI 15-9-77-7       0518651   ALBERTA CROWN        724.10M               
+    102/15-09-077-07W5/00  S   32.6M  W  170.4M    SLAVE LAKE           2800.0M             
+    DEV (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPUR PETROLEUM LTD.                                                 16-10-077-07W5                  
+                                                                                                        
+    SPL 16-10 102 NIPISI 2-16-77-7       0518652   ALBERTA CROWN        723.70M               
+    102/02-16-077-07W5/00  S    3.6M  W  177.8M    SLAVE LAKE           2800.0M             
+    DEV (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPUR PETROLEUM LTD.                                                 16-10-077-07W5                  
+                                                                                                        
+    SPL 16-10 102 NIPISI 4-13-77-7       0518653   ALBERTA CROWN        723.90M               
+    102/04-13-077-07W5/00  S   20.4M  W  163.2M    SLAVE LAKE           2800.0M             
+    DEV (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPUR PETROLEUM LTD.                                                 16-10-077-07W5                  
+                                                                                                        
+    SPL 16-10 103 NIPISI 15-9-77-7       0518654   ALBERTA CROWN        723.90M               
+    103/15-09-077-07W5/00  S   22.9M  W  172.9M    SLAVE LAKE           2800.0M             
+    DEV (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPUR PETROLEUM LTD.                                                 16-10-077-07W5                  
+                                                                                                        
+    SPL 16-10 102 NIPISI 13-12-77-7      0518655   ALBERTA CROWN        724.10M               
+    102/13-12-077-07W5/00  S   39.8M  W  158.2M    SLAVE LAKE           2800.0M             
+    DEV (NC)                             NIPISI                         CLEARWATER FM                   
+    HORIZONTAL                           NEW       PRODUCTION           CRUDE OIL                       
+    SPUR PETROLEUM LTD.                                                 16-10-077-07W5                  
+                                                                                                        
+    SATURNOIL HZ  BRAZR 1-32-47-11       0518656   ALBERTA CROWN        944.00M               
+    100/01-32-047-11W5/00  N  172.0M  W  343.1M    DRAYTON VALLEY       5214.0M             
+    DEV (NC)                             BRAZEAU RIVER                  CARDIUM FM                      
+    HORIZONTAL                           NEW       PRODUCTION           GAS                             
+    SATURN OIL & GAS INC.                                               01-08-048-11W5                  
+                                                                                                        
     WELL LICENCES CANCELLED
     -----------------------
 
     WELL NAME AND U.I.D.                LICENCE NO.                                                     
     --------------------                -----------                                                     
 
-    WHITECAP 2-26 102 HZ KAKWA 2-14-62-5  0500026                                                       
-    102/02-14-062-05W6/00                                                                               
+    TOURMALINE HZ COLUMBIA 6-5-44-15      0509318                                                       
+    100/00-00-000-00W0/00                                                                               
 
-    WHITECAP 2-26 103 HZ KAKWA 2-14-62-5  0500027                                                       
-    103/02-14-062-05W6/00                                                                               
+    SPARTAN DELTA 102 PEMBINA 13-23-45-9  0509336                                                       
+    100/00-00-000-00W0/00                                                                               
 
-    WHITECAP 2-26 104 HZ KAKWA 1-14-62-5  0500028                                                       
-    104/01-14-062-05W6/00                                                                               
+    RBY HZ FIGURE 13-16-63-18             0509363                                                       
+    100/00-00-000-00W0/00                                                                               
+
+    RBY HZ FIGURE 15-16-63-18             0509365                                                       
+    100/00-00-000-00W0/00                                                                               
+
+    RBY HZ FIGURE 16-16-63-18             0509366                                                       
+    100/00-00-000-00W0/00                                                                               
+
+    RBY HZ FIGURE 13-28-63-18             0509367                                                       
+    100/00-00-000-00W0/00                                                                               
+
+    RBY HZ FIGURE 15-28-63-18             0509369                                                       
+    100/00-00-000-00W0/00                                                                               
 
     WELL LICENCES UPDATED
-    ---------------------
+    ---------------------------
 
     WELL NAME AND U.I.D.                LICENCE NO.  AMENDED TO READ
     --------------------                -----------  ---------------
 
-    TOURMALINE HZ 102 SOLOMON 4-24-53-1    0503257   UWI:                                               
-    02/04-24-053-01W6/0                              00/10-13-053-01W6/0                                
+    SPL 10-17 106 MARTENH 16-16-74-25      0516462   UWI:                                               
+    06/16-16-074-25W4/4                              03/09-16-074-25W4/4                                
 
                                                      WELL NAME:                                         
-                                                     TOURMALINE HZ SOLOMON 10-13-53-1                   
+                                                     SPL 10-17 MARTENH 9-16-74-25                       
+
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     09-16-074-25W4                                     
+
+    SPL 10-17 106 MARTENH 16-16-74-25      0516462   UWI:                                               
+    06/16-16-074-25W4/5                              03/09-16-074-25W4/5                                
 
                                                      WELL NAME:                                         
-                                                     TOURMALINE HZ SOLOMON 10-13-53-1                   
+                                                     SPL 10-17 MARTENH 9-16-74-25                       
 
-                                                     BOTTOMHOLE LOCATION                                
-                                                     10-13-053-01W6                                     
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     09-16-074-25W4                                     
 
-    TOURMALINE HZ 102 SOLOMON 4-24-53-1    0503257   UWI:                                               
-    02/04-24-053-01W6/3                              00/11-13-053-01W6/3                                
-
-                                                     WELL NAME:                                         
-                                                     TOURMALINE HZ SOLOMON 11-13-53-1                   
-
-                                                     BOTTOMHOLE LOCATION                                
-                                                     11-13-053-01W6                                     
-
-    TOURMALINE HZ 102 SOLOMON 4-24-53-1    0503257   UWI:                                               
-    02/04-24-053-01W6/2                              00/14-13-053-01W6/2                                
+    SPL 10-17 106 MARTENH 16-16-74-25      0516462   UWI:                                               
+    06/16-16-074-25W4/6                              03/09-16-074-25W4/6                                
 
                                                      WELL NAME:                                         
-                                                     TOURMALINE HZ SOLOMON 14-13-53-1                   
+                                                     SPL 10-17 MARTENH 9-16-74-25                       
 
-                                                     BOTTOMHOLE LOCATION                                
-                                                     14-13-053-01W6                                     
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     09-16-074-25W4                                     
+
+    SPL 14-33 103 NIPISI 6-9-77-6          0517008   UWI:                                               
+    03/06-09-077-06W5/0                              14/05-09-077-06W5/0                                
+
+                                                     WELL NAME:                                         
+                                                     SPL 14-33  NIPISI 5-9-77-6                         
+
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     05-09-077-06W5                                     
+
+    SPL 14-33 103 NIPISI 7-9-77-6          0517009   UWI:                                               
+    03/07-09-077-06W5/0                              00/02-09-077-06W5/0                                
+
+                                                     WELL NAME:                                         
+                                                     SPL 14-33 NIPISI 2-9-77-6                          
+
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     02-09-077-06W5                                     
+
+    SPL 14-33 105 NIPISI 6-9-77-6          0517011   UWI:                                               
+    05/06-09-077-06W5/2                              11/07-09-077-06W5/2                                
+
+                                                     WELL NAME:                                         
+                                                     SPL 14-33 NIPISI 7-9-77-6                          
+
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     07-09-077-06W5                                     
+
+    SPL 10-14 102 MARTEN 13-23-76-6        0517688   UWI:                                               
+    02/13-23-076-06W5/4                              00/13-14-076-06W5/4                                
+
+                                                     WELL NAME:                                         
+                                                     SPL 10-14 MARTEN 13-14-76-6                        
+
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     13-14-076-06W5                                     
+
+    SPL 10-14 102 MARTEN 13-23-76-6        0517688   UWI:                                               
+    02/13-23-076-06W5/5                              00/04-23-076-06W5/5                                
+
+                                                     WELL NAME:                                         
+                                                     SPL 10-14 MARTEN 4-23-76-6                         
+
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     04-23-076-06W5                                     
+
+    SPL 10-14 102 MARTEN 13-23-76-6        0517688   UWI:                                               
+    02/13-23-076-06W5/6                              00/04-23-076-06W5/6                                
+
+                                                     WELL NAME:                                         
+                                                     SPL 10-14 MARTEN 4-23-76-6                         
+
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     04-23-076-06W5                                     
+
+    SPL 10-14 102 MARTEN 13-23-76-6        0517688   UWI:                                               
+    02/13-23-076-06W5/3                              02/05-23-076-06W5/3                                
+
+                                                     WELL NAME:                                         
+                                                     SPL 10-14 MARTEN 5-23-76-6                         
+
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     05-23-076-06W5                                     
+
+    SPL 10-14 102 MARTEN 13-23-76-6        0517688   UWI:                                               
+    02/13-23-076-06W5/0                              02/06-23-076-06W5/0                                
+
+                                                     WELL NAME:                                         
+                                                     SPL 10-14 102 MARTEN 6-23-76-6                     
+
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     06-23-076-06W5                                     
+
+    SPL 10-14 102 MARTEN 13-23-76-6        0517688   UWI:                                               
+    02/13-23-076-06W5/2                              02/06-23-076-06W5/2                                
+
+                                                     WELL NAME:                                         
+                                                     SPL 10-14 102 MARTEN 6-23-76-6                     
+
+                                                     BOTTOMHOLE LOCATION:                               
+                                                     06-23-076-06W5                                     
 
 
     -------------------- END OF WELL LICENCES DAILY LIST  -------------------- 

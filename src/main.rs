@@ -57,11 +57,7 @@ async fn download_files_by_date_range(start_date: NaiveDate, end_date: NaiveDate
 }
 
 fn open_file_lines(filename: &str) -> Result<Vec<String>, std::io::Error> {
-    let path = if filename.starts_with("WELLS") {
-        filename.to_string()
-    } else {
-        format!("TXT/WELLS{}.TXT", filename)
-    };
+    let path = Path::new(filename);
     let file = File::open(&path)?;
     let content = BufReader::new(file);
     let lines: Vec<String> = content
@@ -85,7 +81,20 @@ fn trim_and_remove_empty_lines(lines: Vec<String>) -> Vec<String> {
 fn extract_licences_lines(lines: &Vec<String>, breaks: Vec<usize>) -> Vec<String> {
     let mut licences_lines: Vec<String> = Vec::new();
 
-    for i in breaks[1]+1..breaks[2]-1 {
+    if breaks.len() < 2 {
+        return licences_lines;
+    }
+
+    let end_index = if breaks.len() > 2 {
+        breaks[2]
+    } else {
+        lines.len()
+    };
+
+    for i in breaks[1] + 1..end_index {
+        if lines[i].contains("AMENDMENTS OF WELL LICENCES") || lines[i].contains("END OF WELL LICENCES DAILY LIST") {
+            break;
+        }
         licences_lines.push(lines[i].to_string());
     }
 
@@ -95,35 +104,35 @@ fn extract_licences_lines(lines: &Vec<String>, breaks: Vec<usize>) -> Vec<String
 fn extract_license(lines: Vec<String>, date: String) -> Vec<License> {
     let mut licences: Vec<License> = Vec::new();
 
-    let mut index: Vec<usize> = Vec::new();
+    for i in (0..lines.len()).step_by(5) {
+        if i + 4 < lines.len() {
+            let line0 = &lines[i];
+            let line1 = &lines[i+1];
+            let line2 = &lines[i+2];
+            let line3 = &lines[i+3];
+            let line4 = &lines[i+4];
 
-    for (pos, _) in lines.iter().enumerate() {
-        if pos % 5 == 0 {
-            index.push(pos);
+            licences.push(License {
+                date: date.clone(),
+                well_name: line0.get(..37).unwrap_or("").trim().to_string(),
+                licence_number: line0.get(37..47).unwrap_or("").trim().to_string(),
+                mineral_rights: line0.get(47..68).unwrap_or("").trim().to_string(),
+                ground_elevation: line0.get(68..).unwrap_or("").trim().to_string(),
+                unique_identifier: line1.get(..37).unwrap_or("").trim().to_string(),
+                surface_coordinates: line1.get(37..47).unwrap_or("").trim().to_string(),
+                aer_field_centre: line1.get(47..68).unwrap_or("").trim().to_string(),
+                projected_depth: line1.get(68..).unwrap_or("").trim().to_string(),
+                aer_classification: line2.get(..37).unwrap_or("").trim().to_string(),
+                field: line2.get(37..68).unwrap_or("").trim().to_string(),
+                terminating_zone: line2.get(68..).unwrap_or("").trim().to_string(),
+                drilling_operation: line3.get(..37).unwrap_or("").trim().to_string(),
+                well_purpose: line3.get(37..47).unwrap_or("").trim().to_string(),
+                well_type: line3.get(47..68).unwrap_or("").trim().to_string(),
+                substance: line3.get(68..).unwrap_or("").trim().to_string(),
+                licensee: line4.get(..68).unwrap_or("").trim().to_string(),
+                surface_location: line4.get(68..).unwrap_or("").trim().to_string()
+            });
         }
-    }
-
-    for i in index {
-        licences.push(License {
-            date: date.clone(),
-            well_name: lines[i][..37].trim().to_string(),
-            licence_number: lines[i][37..47].trim().to_string(),
-            mineral_rights: lines[i][47..68].trim().to_string(),
-            ground_elevation: lines[i][68..].trim().to_string(),
-            unique_identifier: lines[i+1][..37].trim().to_string(),
-            surface_coordinates: lines[i+1][37..47].trim().to_string(),
-            aer_field_centre: lines[i+1][47..68].trim().to_string(),
-            projected_depth: lines[i+1][68..].trim().to_string(),
-            aer_classification: lines[i+2][..37].trim().to_string(),
-            field: lines[i+2][37..68].trim().to_string(),
-            terminating_zone: lines[i+2][68..].trim().to_string(),
-            drilling_operation: lines[i+3][..37].trim().to_string(),
-            well_purpose: lines[i+3][37..47].trim().to_string(),
-            well_type: lines[i+3][47..68].trim().to_string(),
-            substance: lines[i+3][68..].trim().to_string(),
-            licensee: lines[i+4][..68].trim().to_string(),
-            surface_location: lines[i+4][68..].trim().to_string()
-        });
     }
 
     licences
@@ -155,18 +164,18 @@ struct Indices {
 }
 
 impl Indices {
-    fn search(lines: &Vec<String>) -> Indices {  
+    fn search(lines: &Vec<String>) -> Indices {
         let mut index_breaks: Vec<usize> = Vec::new();
         let mut index_date: Vec<usize> = Vec::new();
-        
+
         for (pos, line) in lines.iter().enumerate() {
-            if line.contains("---") {
+            if line.contains("---") && !line.contains("END OF") {
                 index_breaks.push(pos);
             } else if line.contains("DATE") {
                 index_date.push(pos);
             }
         }
-        
+
         Indices {
             breaks: index_breaks,
             date: index_date,
@@ -175,13 +184,22 @@ impl Indices {
 }
 
 fn process_file(filename: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let lines = open_file_lines(filename)?;
+    let path_buf;
+    let path_to_open = if filename.contains('/') {
+        filename
+    } else {
+        path_buf = format!("TXT/WELLS{}.TXT", filename);
+        &path_buf
+    };
+
+    let lines = open_file_lines(path_to_open)?;
     let lines_trimmed = trim_and_remove_empty_lines(lines);
     let index = Indices::search(&lines_trimmed);
     let date = &lines_trimmed[index.date[0]].trim()[6..];
     let licences_lines = extract_licences_lines(&lines_trimmed, index.breaks);
     let licences = extract_license(licences_lines, date.to_string());
-    write_licence_to_csv(licences, filename);
+    let filename_for_csv = Path::new(filename).file_name().and_then(|s| s.to_str()).unwrap_or(filename);
+    write_licence_to_csv(licences, filename_for_csv);
     Ok(())
 }
 
@@ -197,7 +215,8 @@ fn process_folder(folder_path: &str) -> Result<(), Box<dyn std::error::Error>> {
         if path.is_file() && path.extension().and_then(|s| s.to_str()) == Some("TXT") {
             if let Some(filename) = path.file_name().and_then(|s| s.to_str()) {
                 if filename.starts_with("WELLS") {
-                    process_file(filename)?;
+                    println!("Processing file: {}", path.display());
+                    process_file(path.to_str().unwrap_or_default())?;
                 }
             }
         }
