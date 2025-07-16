@@ -195,9 +195,17 @@ fn process_file(filename: &str) -> Result<(), Box<dyn std::error::Error>> {
     let lines = open_file_lines(path_to_open)?;
     let lines_trimmed = trim_and_remove_empty_lines(lines);
     let index = Indices::search(&lines_trimmed);
-    let date = &lines_trimmed[index.date[0]].trim()[6..];
+    
+    if index.date.is_empty() {
+        return Err(format!("No date found in file: {}", filename).into());
+    }
+
+    let date_str = &lines_trimmed[index.date[0]].trim()[6..];
+    let parsed_date = NaiveDate::parse_from_str(date_str, "%d %B %Y")?;
+    let formatted_date = parsed_date.format("%Y-%m-%d").to_string();
+
     let licences_lines = extract_licences_lines(&lines_trimmed, index.breaks);
-    let licences = extract_license(licences_lines, date.to_string());
+    let licences = extract_license(licences_lines, formatted_date);
     let filename_for_csv = Path::new(filename).file_name().and_then(|s| s.to_str()).unwrap_or(filename);
     write_licence_to_csv(licences, filename_for_csv);
     Ok(())
