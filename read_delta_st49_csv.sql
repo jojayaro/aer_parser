@@ -1,0 +1,1 @@
+select * from 'CSV/SPUD*.csv' limit 10;

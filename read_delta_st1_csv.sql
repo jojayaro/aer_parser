@@ -1,0 +1,1 @@
+select * from 'CSV/WELLS*.csv' limit 10;

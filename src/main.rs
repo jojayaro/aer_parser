@@ -2,6 +2,7 @@ use aer_st1::{process_date_range, process_file, process_folder, AppError, Report
 use chrono::NaiveDate;
 use log::{info};
 use clap::{Parser, Subcommand};
+mod delta;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -15,7 +16,7 @@ enum Commands {
     /// Process a single file
     File {
         /// The type of report to process (st1 or st49)
-        #[arg(value_enum)]
+        #[arg(long, value_enum)]
         report_type: ReportType,
         /// The path to the file to process
         filename: String,
@@ -26,7 +27,7 @@ enum Commands {
     /// Process all files in a folder
     Folder {
         /// The type of report to process (st1 or st49)
-        #[arg(value_enum)]
+        #[arg(long, value_enum)]
         report_type: ReportType,
         /// The path to the folder to process
         folder_path: String,
@@ -37,11 +38,13 @@ enum Commands {
     /// Download and process files within a date range
     DateRange {
         /// The type of report to process (st1 or st49)
-        #[arg(value_enum)]
+        #[arg(long, value_enum)]
         report_type: ReportType,
         /// The start date (YYYY-MM-DD)
+        #[arg(long)]
         start_date: NaiveDate,
         /// The end date (YYYY-MM-DD)
+        #[arg(long)]
         end_date: NaiveDate,
         /// Optional: Output directory for TXT files
         #[arg(long, default_value = "TXT")]
@@ -49,6 +52,27 @@ enum Commands {
         /// Optional: Output directory for CSV files
         #[arg(long, default_value = "CSV")]
         csv_output_dir: String,
+    },
+    /// Load CSV(s) into a Delta table
+    LoadDelta {
+        /// The type of report to load (st1 or st49)
+        #[arg(long, value_enum)]
+        report_type: ReportType,
+        /// Path to a single CSV file (optional if csv_folder is used)
+        #[arg(long)]
+        csv_path: Option<String>,
+        /// Path to a folder containing CSV files (optional if csv_path is used)
+        #[arg(long)]
+        csv_folder: Option<String>,
+        /// Path to the Delta table
+        #[arg(long)]
+        table_path: String,
+        /// Optional: Path to the log file
+        #[arg(long, default_value = "delta_load_log.json")]
+        log_path: String,
+        /// Recreate the table if it already exists
+        #[arg(long)]
+        recreate_table: bool,
     },
 }
 
@@ -69,6 +93,86 @@ async fn main() -> Result<(), AppError> {
         Commands::DateRange { report_type, start_date, end_date, txt_output_dir, csv_output_dir } => {
             info!("Downloading and processing from {} to {}", start_date, end_date);
             process_date_range(*report_type, *start_date, *end_date, txt_output_dir, csv_output_dir).await?;
+        }
+        Commands::LoadDelta {
+            report_type,
+            csv_path,
+            csv_folder,
+            table_path,
+            log_path,
+            recreate_table,
+        } => {
+            use crate::delta::{
+                create_or_open_delta_table, load_csv_to_delta, log_loaded_csv, read_load_log,
+                DeltaReportType,
+            };
+            use std::fs;
+            use std::path::Path;
+
+            if *recreate_table {
+                let table_path_obj = Path::new(table_path);
+                if table_path_obj.exists() {
+                    info!("Recreating delta table at {}", table_path);
+                    std::fs::remove_dir_all(table_path_obj)?;
+                }
+                let log_path_obj = Path::new(log_path);
+                if log_path_obj.exists() {
+                    info!("Removing log file at {}", log_path);
+                    std::fs::remove_file(log_path_obj)?;
+                }
+            }
+
+            let delta_type = match report_type {
+                ReportType::St1 => DeltaReportType::St1,
+                ReportType::St49 => DeltaReportType::St49,
+            };
+
+            let mut table =
+                create_or_open_delta_table(Path::new(table_path), delta_type).await?;
+
+            let processed_files = read_load_log(Path::new(log_path))?;
+
+            let mut csv_files = Vec::new();
+            if let Some(folder) = csv_folder {
+                info!("Searching for CSV files in folder: {}", folder);
+                let prefix = match report_type {
+                    ReportType::St1 => "WELLS",
+                    ReportType::St49 => "SPUD",
+                };
+
+                for entry in fs::read_dir(folder)? {
+                    let entry = entry?;
+                    let path = entry.path();
+                    if let Some(filename) = path.file_name().and_then(|n| n.to_str()) {
+                        if filename.starts_with(prefix) && filename.ends_with(".csv") {
+                            if !processed_files.contains(&path.to_string_lossy().to_string()) {
+                                info!("Found CSV file: {:?}", path);
+                                csv_files.push(path);
+                            } else {
+                                info!("Skipping already processed file: {:?}", path);
+                            }
+                        }
+                    }
+                }
+            }
+            if let Some(file) = csv_path {
+                let path = Path::new(file).to_path_buf();
+                if !processed_files.contains(path.to_str().unwrap()) {
+                    csv_files.push(path);
+                }
+            }
+
+            for csv in csv_files {
+                match load_csv_to_delta(&mut table, &csv).await {
+                    Ok(loaded_rows) => {
+                        info!("Loaded {} rows from {:?}", loaded_rows, csv);
+                        log_loaded_csv(Path::new(log_path), &csv)?;
+                    }
+                    Err(e) => {
+                        eprintln!("Failed to load CSV file {:?}: {}", csv, e);
+                    }
+                }
+            }
         }
     }
 

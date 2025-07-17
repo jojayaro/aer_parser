@@ -3,5 +3,7 @@
 /zip
 /CSV
 /TXT
-]*.egg-info
+*.egg-info
 .gitignore
+/st1
+/st49

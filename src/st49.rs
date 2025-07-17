@@ -1,25 +1,24 @@
 use crate::AppError;
 use chrono::NaiveDate;
-use log::info;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use crate::utils::{open_file_lines, process_folder_generic};
 
 #[derive(Debug, Serialize, Deserialize)]
-struct SpudData {
-    date: String,
-    well_id: String,
-    well_name: String,
-    licence: String,
-    contractor_ba_id: String,
-    contractor_name: String,
-    rig_number: String,
-    activity_date: String,
-    field_centre: String,
-    ba_id: String,
-    licensee: String,
-    new_projected_total_depth: String,
-    activity_type: String,
+pub struct SpudData {
+    pub date: String,
+    pub well_id: String,
+    pub well_name: String,
+    pub licence: String,
+    pub contractor_ba_id: String,
+    pub contractor_name: String,
+    pub rig_number: String,
+    pub activity_date: String,
+    pub field_centre: String,
+    pub ba_id: String,
+    pub licensee: String,
+    pub new_projected_total_depth: String,
+    pub activity_type: String,
 }
 
 fn extract_data_and_separator(lines: &[String]) -> (Vec<String>, Option<String>) {
@@ -99,12 +98,18 @@ fn extract_spud_data(lines: Vec<String>, date: String, separator: &str) -> Vec<S
 }
 
 fn write_spud_data_to_csv(spud_data: Vec<SpudData>, filename: &str, csv_output_dir: &str) -> Result<(), AppError> {
+    if spud_data.is_empty() {
+        return Ok(());
+    }
+
     let output_filename = Path::new(filename)
         .file_stem()
         .and_then(|s| s.to_str())
         .unwrap_or("output");
 
-    let mut wtr = csv::Writer::from_path(format!("{}/{}.csv", csv_output_dir, output_filename))?;
+    let mut wtr = csv::WriterBuilder::new()
+        .delimiter(b'|')
+        .from_path(format!("{}/{}.csv", csv_output_dir, output_filename))?;
     for data in spud_data {
         wtr.serialize(data)?;
     }
@@ -127,7 +132,9 @@ pub async fn process_file(filename: &str, csv_output_dir: &str) -> Result<(), Ap
     let (spud_data_lines, separator_line) = extract_data_and_separator(&lines);
     if let Some(separator) = separator_line {
         let spud_data = extract_spud_data(spud_data_lines, formatted_date, &separator);
-        write_spud_data_to_csv(spud_data, filename, csv_output_dir)?;
+        if !spud_data.is_empty() {
+            write_spud_data_to_csv(spud_data, filename, csv_output_dir)?;
+        }
     } else {
         return Err(AppError::FileProcessing("Separator line not found in file".to_string()));
     }

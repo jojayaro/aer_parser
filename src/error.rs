@@ -18,4 +18,12 @@ pub enum AppError {
     Cli(String),
     #[error("Task join error: {0}")]
     Join(#[from] tokio::task::JoinError),
+    #[error("Delta lake error: {0}")]
+    Delta(#[from] deltalake::DeltaTableError),
+    #[error("Arrow error: {0}")]
+    Arrow(#[from] deltalake::arrow::error::ArrowError),
+    #[error("Serde JSON error: {0}")]
+    SerdeJson(#[from] serde_json::Error),
+    #[error("Anyhow error: {0}")]
+    Anyhow(#[from] anyhow::Error),
 }

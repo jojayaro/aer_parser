@@ -1,0 +1,1 @@
+select * from delta_scan('./st49') limit 10;

@@ -56,7 +56,9 @@ pub async fn process_date_range(
             ReportType::St49 => ("SPUD", "txt"),
         };
         let full_filename = format!("{}/{}{}.{}", txt_output_dir, prefix, filename, extension);
-        process_file(report_type, &full_filename, csv_output_dir).await?;
+        if let Err(e) = process_file(report_type, &full_filename, csv_output_dir).await {
+            eprintln!("Failed to process file {:?}: {}", full_filename, e);
+        }
     }
     Ok(())
 }

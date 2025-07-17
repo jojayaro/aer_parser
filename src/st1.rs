@@ -1,30 +1,29 @@
 use crate::AppError;
 use chrono::NaiveDate;
-use log::{info, warn};
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use crate::utils::{open_file_lines, process_folder_generic};
 
 #[derive(Debug, Serialize, Deserialize)]
-struct License {
-    date: String,
-    well_name: String,
-    licence_number: String,
-    mineral_rights: String,
-    ground_elevation: String,
-    unique_identifier: String,
-    surface_coordinates: String,
-    aer_field_centre: String,
-    projected_depth: String,
-    aer_classification: String,
-    field: String,
-    terminating_zone: String,
-    drilling_operation: String,
-    well_purpose: String,
-    well_type: String,
-    substance: String,
-    licensee: String,
-    surface_location: String,
+pub struct License {
+    pub date: String,
+    pub well_name: String,
+    pub licence_number: String,
+    pub mineral_rights: String,
+    pub ground_elevation: String,
+    pub unique_identifier: String,
+    pub surface_coordinates: String,
+    pub aer_field_centre: String,
+    pub projected_depth: String,
+    pub aer_classification: String,
+    pub field: String,
+    pub terminating_zone: String,
+    pub drilling_operation: String,
+    pub well_purpose: String,
+    pub well_type: String,
+    pub substance: String,
+    pub licensee: String,
+    pub surface_location: String,
 }
 
 fn trim_and_remove_empty_lines(lines: Vec<String>) -> Vec<String> {
@@ -97,12 +96,18 @@ fn extract_license(lines: Vec<String>, date: String) -> Vec<License> {
 }
 
 fn write_licence_to_csv(licences: Vec<License>, filename: &str, csv_output_dir: &str) -> Result<(), AppError> {
+    if licences.is_empty() {
+        return Ok(());
+    }
+
     let output_filename = Path::new(filename)
         .file_stem()
         .and_then(|s| s.to_str())
         .unwrap_or("output");
     
-    let mut wtr = csv::Writer::from_path(format!("{}/{}.csv", csv_output_dir, output_filename))?;
+    let mut wtr = csv::WriterBuilder::new()
+        .delimiter(b'|')
+        .from_path(format!("{}/{}.csv", csv_output_dir, output_filename))?;
     for licence in licences {
         wtr.serialize(licence)?;
     }
@@ -137,7 +142,9 @@ pub async fn process_file(filename: &str, csv_output_dir: &str) -> Result<(), Ap
     log::info!("Extracted and trimmed licences_lines: {:#?}", licences_lines_trimmed);
     let licences = extract_license(licences_lines_trimmed, formatted_date);
     log::info!("Extracted licences: {:#?}", licences);
-    write_licence_to_csv(licences, filename, csv_output_dir)?;
+    if !licences.is_empty() {
+        write_licence_to_csv(licences, filename, csv_output_dir)?;
+    }
     Ok(())
 }
 
