@@ -30,14 +30,16 @@ fn open_file_lines(filename: &str) -> Result<Vec<String>, std::io::Error> {
     Ok(lines)
 }
 
-fn extract_spud_data_lines(lines: &[String]) -> Vec<String> {
+fn extract_data_and_separator(lines: &[String]) -> (Vec<String>, Option<String>) {
     let mut data_lines = Vec::new();
+    let mut separator_line = None;
     let mut start_index = None;
     let mut end_index = None;
 
     for (i, line) in lines.iter().enumerate() {
         if line.contains("------") {
             start_index = Some(i + 1);
+            separator_line = Some(line.clone());
         }
         if line.contains("TOTAL  -") {
             end_index = Some(i);
@@ -53,27 +55,51 @@ fn extract_spud_data_lines(lines: &[String]) -> Vec<String> {
         }
     }
 
-    data_lines
+    (data_lines, separator_line)
 }
 
-fn extract_spud_data(lines: Vec<String>, date: String) -> Vec<SpudData> {
+fn get_field_boundaries(separator: &str) -> Vec<(usize, usize)> {
+    let mut boundaries = Vec::new();
+    let mut start = 0;
+    for (i, char) in separator.char_indices() {
+        if char.is_whitespace() {
+            if i > start {
+                boundaries.push((start, i));
+            }
+            start = i + 1;
+        }
+    }
+    boundaries.push((start, separator.len()));
+    boundaries
+}
+
+fn extract_spud_data(lines: Vec<String>, date: String, separator: &str) -> Vec<SpudData> {
     let mut spud_data_list: Vec<SpudData> = Vec::new();
+    let boundaries = get_field_boundaries(separator);
 
     for line in lines {
+        let get_field = |index: usize| -> String {
+            if let Some(&(start, end)) = boundaries.get(index) {
+                line.get(start..end).unwrap_or("").trim().to_string()
+            } else {
+                "".to_string()
+            }
+        };
+
         spud_data_list.push(SpudData {
             date: date.clone(),
-            well_id: line.get(0..19).unwrap_or("").trim().to_string(),
-            well_name: line.get(19..52).unwrap_or("").trim().to_string(),
-            licence: line.get(52..60).unwrap_or("").trim().to_string(),
-            contractor_ba_id: line.get(60..66).unwrap_or("").trim().to_string(),
-            contractor_name: line.get(66..99).unwrap_or("").trim().to_string(),
-            rig_number: line.get(99..105).unwrap_or("").trim().to_string(),
-            activity_date: line.get(105..116).unwrap_or("").trim().to_string(),
-            field_centre: line.get(116..133).unwrap_or("").trim().to_string(),
-            ba_id: line.get(133..139).unwrap_or("").trim().to_string(),
-            licensee: line.get(139..172).unwrap_or("").trim().to_string(),
-            new_projected_total_depth: line.get(172..178).unwrap_or("").trim().to_string(),
-            activity_type: line.get(178..).unwrap_or("").trim().to_string(),
+            well_id: get_field(0),
+            well_name: get_field(1),
+            licence: get_field(2),
+            contractor_ba_id: get_field(3),
+            contractor_name: get_field(4),
+            rig_number: get_field(5),
+            activity_date: get_field(6),
+            field_centre: get_field(7),
+            ba_id: get_field(8),
+            licensee: get_field(9),
+            new_projected_total_depth: get_field(10),
+            activity_type: line.get(boundaries.get(10).map_or(line.len(), |b| b.1)..).unwrap_or("").trim().to_string(),
         });
     }
 
@@ -102,9 +128,12 @@ pub async fn process_file(filename: &str) -> Result<(), AppError> {
     let parsed_date = NaiveDate::parse_from_str(&date_str, "%d %B %Y")?;
     let formatted_date = parsed_date.format("%Y-%m-%d").to_string();
 
-    let spud_data_lines = extract_spud_data_lines(&lines);
-    let spud_data = extract_spud_data(spud_data_lines, formatted_date);
-    write_spud_data_to_csv(spud_data, filename)?;
+    let (spud_data_lines, separator_line) = extract_data_and_separator(&lines);
+    if let Some(separator) = separator_line {
+        let spud_data = extract_spud_data(spud_data_lines, formatted_date, &separator);
+        write_spud_data_to_csv(spud_data, filename)?;
+    }
+
     Ok(())
 }
 
