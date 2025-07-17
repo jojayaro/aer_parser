@@ -112,6 +112,9 @@ RUST_LOG=info cargo run --bin aer_parser load-delta --report-type st1 --csv-fold
 
 # Query the delta table to verify the contents
 duckdb < ./read_delta_st1.sql
+
+# Compare the delta table with the CSV files
+duckdb < ./st1_csv_delta_comparison.sql
 ```
 
 **ST49 Verification:**
@@ -121,6 +124,9 @@ RUST_LOG=info cargo run --bin aer_parser load-delta --report-type st49 --csv-fol
 
 # Query the delta table to verify the contents
 duckdb < ./read_delta_st49.sql
+
+# Compare the delta table with the CSV files
+duckdb < ./st49_csv_delta_comparison.sql
 ```
 
 ### Debugging
