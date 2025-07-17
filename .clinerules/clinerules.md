@@ -16,8 +16,8 @@ The application is structured as a library crate with a binary executable, promo
     *   The `download_files_by_date_range` function fetches files concurrently for a given date range.
     *   It uses `reqwest` for HTTP requests and `futures::future::join_all` for parallel execution, significantly speeding up the download process.
     *   It dynamically constructs the URL based on the report type:
-        *   **ST1**: `https://static.aer.ca/prd/data/well-lic/WELLS{MMDD}.TXT`
-        *   **ST49**: `https://static.aer.ca/prd/data/wells/SPUD{MMDD}.TXT`
+        *   **ST1**: `https://static.aer.ca/prd/data/well-lic/WELLS{MMDD}.TXT` (uppercase extension)
+        *   **ST49**: `https://static.aer.ca/prd/data/wells/SPUD{MMDD}.txt` (lowercase extension)
     *   Downloaded files are saved in the `TXT/` directory.
 
 3.  **Parsing (`src/st1.rs`, `src/st49.rs`)**:
