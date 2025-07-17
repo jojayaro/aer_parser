@@ -67,9 +67,9 @@ enum Commands {
         /// Path to the Delta table
         #[arg(long)]
         table_path: String,
-        /// Optional: Path to the log file
-        #[arg(long, default_value = "delta_load_log.json")]
-        log_path: String,
+        /// Optional: Path to the log file. Defaults to delta_load_log.json inside the table_path.
+        #[arg(long)]
+        log_path: Option<String>,
         /// Recreate the table if it already exists
         #[arg(long)]
         recreate_table: bool,
@@ -102,12 +102,18 @@ async fn main() -> Result<(), AppError> {
             log_path,
             recreate_table,
         } => {
-            use crate::delta::{
-                create_or_open_delta_table, load_csv_to_delta, log_loaded_csv, read_load_log,
-                DeltaReportType,
-            };
+            use crate::delta::{create_or_open_delta_table, load_csv_to_delta, log_loaded_csv, read_load_log, DeltaReportType};
+            use deltalake::DeltaOps;
             use std::fs;
             use std::path::Path;
+
+            use std::path::PathBuf;
+
+            let log_path = if let Some(lp) = log_path {
+                PathBuf::from(lp)
+            } else {
+                PathBuf::from(table_path).join("delta_load_log.json")
+            };
 
             if *recreate_table {
                 let table_path_obj = Path::new(table_path);
@@ -115,10 +121,9 @@ async fn main() -> Result<(), AppError> {
                     info!("Recreating delta table at {}", table_path);
                     std::fs::remove_dir_all(table_path_obj)?;
                 }
-                let log_path_obj = Path::new(log_path);
-                if log_path_obj.exists() {
-                    info!("Removing log file at {}", log_path);
-                    std::fs::remove_file(log_path_obj)?;
+                if log_path.exists() {
+                    info!("Removing log file at {:?}", log_path);
+                    std::fs::remove_file(&log_path)?;
                 }
             }
 
@@ -130,7 +135,7 @@ async fn main() -> Result<(), AppError> {
             let mut table =
                 create_or_open_delta_table(Path::new(table_path), delta_type).await?;
 
-            let processed_files = read_load_log(Path::new(log_path))?;
+            let processed_files = read_load_log(&log_path)?;
 
             let mut csv_files = Vec::new();
             if let Some(folder) = csv_folder {
@@ -145,7 +150,8 @@ async fn main() -> Result<(), AppError> {
                     let path = entry.path();
                     if let Some(filename) = path.file_name().and_then(|n| n.to_str()) {
                         if filename.starts_with(prefix) && filename.ends_with(".csv") {
-                            if !processed_files.contains(&path.to_string_lossy().to_string()) {
+                            let canonical_path = path.canonicalize()?;
+                            if !processed_files.contains(&canonical_path.to_string_lossy().to_string()) {
                                 info!("Found CSV file: {:?}", path);
                                 csv_files.push(path);
                             } else {
@@ -157,8 +163,11 @@ async fn main() -> Result<(), AppError> {
             }
             if let Some(file) = csv_path {
                 let path = Path::new(file).to_path_buf();
-                if !processed_files.contains(path.to_str().unwrap()) {
+                let canonical_path = path.canonicalize()?;
+                if !processed_files.contains(&canonical_path.to_string_lossy().to_string()) {
                     csv_files.push(path);
+                } else {
+                    info!("Skipping already processed file: {:?}", path);
                 }
             }
 
@@ -166,13 +175,20 @@ async fn main() -> Result<(), AppError> {
                 match load_csv_to_delta(&mut table, &csv).await {
                     Ok(loaded_rows) => {
                         info!("Loaded {} rows from {:?}", loaded_rows, csv);
-                        log_loaded_csv(Path::new(log_path), &csv)?;
+                        log_loaded_csv(&log_path, &csv)?;
                     }
                     Err(e) => {
                         eprintln!("Failed to load CSV file {:?}: {}", csv, e);
                     }
                 }
             }
+
+            info!("Optimizing delta table at {}", table_path);
+            let ops = DeltaOps::from(table.clone());
+            ops.optimize().await?;
+            info!("Vacuuming delta table at {}", table_path);
+            let ops = DeltaOps::from(table.clone());
+            ops.vacuum().with_dry_run(false).await?;
         }
     }
 

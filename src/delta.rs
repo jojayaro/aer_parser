@@ -5,7 +5,7 @@ use deltalake::arrow::csv::ReaderBuilder;
 use deltalake::kernel::{DataType, PrimitiveType, StructField};
 use deltalake::protocol::SaveMode;
 use delta_kernel::engine::arrow_conversion::TryIntoArrow;
-use deltalake::writer::{DeltaWriter, RecordBatchWriter};
+
 use deltalake::{DeltaOps, DeltaTable};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
@@ -128,7 +128,7 @@ pub fn log_loaded_csv(log_path: &Path, csv_path: &Path) -> Result<()> {
         .open(log_path)?;
 
     let log_entry = LogEntry {
-        csv_file: csv_path.to_string_lossy().into_owned(),
+        csv_file: csv_path.canonicalize()?.to_string_lossy().into_owned(),
         timestamp: Utc::now().to_rfc3339(),
     };
 

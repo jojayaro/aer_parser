@@ -32,25 +32,43 @@ fn trim_and_remove_empty_lines(lines: Vec<String>) -> Vec<String> {
 
 fn extract_licences_lines(lines: &[String]) -> Result<Vec<String>, AppError> {
     let mut licences_lines: Vec<String> = Vec::new();
+    let mut start_data_index: Option<usize> = None;
+    let mut end_data_index: Option<usize> = None;
 
-    let mut start_index = 0;
+    // Find the start of the "WELL LICENCES ISSUED" data block
     for (i, line) in lines.iter().enumerate() {
         if line.contains("WELL NAME") && line.contains("LICENCE NUMBER") {
-            start_index = i + 6; // 6 lines after the header line is where the first license starts
+            // The actual data starts 6 lines after this header
+            start_data_index = Some(i + 6);
             break;
         }
     }
 
-    let mut end_index = lines.len();
-    for (i, line) in lines.iter().enumerate() {
-        if i > start_index && (line.contains("WELL LICENCES CANCELLED") || line.contains("AMENDMENTS OF WELL LICENCES") || line.contains("END OF WELL LICENCES DAILY LIST")) {
-            end_index = i;
-            break;
+    if let Some(start) = start_data_index {
+        // Find the end of the "WELL LICENCES ISSUED" data block
+        // This is typically marked by the start of the next section or the end of the file
+        for i in start..lines.len() {
+            let line = &lines[i];
+            if line.contains("WELL LICENCES UPDATED") ||
+               line.contains("WELL LICENCES CANCELLED") ||
+               line.contains("AMENDMENTS OF WELL LICENCES") ||
+               line.contains("END OF WELL LICENCES DAILY LIST") {
+                end_data_index = Some(i);
+                break;
+            }
         }
-    }
 
-    for i in start_index..end_index {
-        licences_lines.push(lines[i].to_string());
+        // If no specific end marker is found, the data goes to the end of the file
+        let end = end_data_index.unwrap_or(lines.len());
+
+        // Extract lines between start and end, ensuring they are not just empty or separator lines
+        for i in start..end {
+            let line = &lines[i];
+            // Only add lines that are not empty and not separator lines
+            if !line.trim().is_empty() && !line.contains("--------------------------------------------------------------------------------------------") {
+                licences_lines.push(line.to_string());
+            }
+        }
     }
 
     Ok(licences_lines)
