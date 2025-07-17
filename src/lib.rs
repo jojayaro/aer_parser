@@ -46,17 +46,13 @@ pub async fn process_date_range(
     let downloaded_files =
         downloader::download_files_by_date_range(report_type, start_date, end_date).await?;
     
-    let report_prefix = match report_type {
-        ReportType::St1 => "WELLS",
-        ReportType::St49 => "SPUD",
-    };
-
     for filename in downloaded_files {
-        let full_filename = format!("TXT/{}{}.TXT", report_prefix, filename);
-        match report_type {
-            ReportType::St1 => st1::process_file(&full_filename).await?,
-            ReportType::St49 => st49::process_file(&full_filename).await?,
-        }
+        let (prefix, extension) = match report_type {
+            ReportType::St1 => ("WELLS", "TXT"),
+            ReportType::St49 => ("SPUD", "txt"),
+        };
+        let full_filename = format!("TXT/{}{}.{}", prefix, filename, extension);
+        process_file(report_type, &full_filename).await?;
     }
     Ok(())
 }

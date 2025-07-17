@@ -11,16 +11,17 @@ async fn download_file(
     date: NaiveDate,
     report_type: &ReportType,
 ) -> Result<String, AppError> {
-    let (url_prefix, file_prefix) = match report_type {
+    let (url_prefix, file_prefix, extension) = match report_type {
         ReportType::St1 => (
             "https://static.aer.ca/prd/data/well-lic/WELLS",
             "WELLS",
+            "TXT",
         ),
-        ReportType::St49 => ("https://static.aer.ca/prd/data/wells/SPUD", "SPUD"),
+        ReportType::St49 => ("https://static.aer.ca/prd/data/wells/SPUD", "SPUD", "txt"),
     };
 
     let filename_date = date.format("%m%d").to_string();
-    let url = format!("{}{}.TXT", url_prefix, filename_date);
+    let url = format!("{}{}.{}", url_prefix, filename_date, extension);
     let response = client.get(&url).send().await?;
 
     if !response.status().is_success() {
@@ -32,7 +33,7 @@ async fn download_file(
     }
 
     let bytes = response.bytes().await?;
-    let filepath = format!("TXT/{}{}.TXT", file_prefix, filename_date);
+    let filepath = format!("TXT/{}{}.{}", file_prefix, filename_date, extension);
     let mut file = File::create(&filepath)?;
     file.write_all(&bytes)?;
 
