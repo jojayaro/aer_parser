@@ -1,0 +1,9 @@
+date,well_id,well_name,licence,contractor_ba_id,contractor_name,rig_number,activity_date,field_centre,ba_id,licensee,new_projected_total_depth,activity_type
+2025-01-01,00/05-15-050-22W5/0,TOURMALINE HZ LAMBERT 5-15-50-22,0515496,A978,Bear Drilling Corp.,1,01 Jan 2025 12:30:00 PM,Drayton Valley,A573,Tourmaline Oil Corp.,,Drill To LD
+2025-01-01,00/04-02-052-11W5/0,TEL HZ CARROT 4-2-52-11,0510153,0Z41,Ensign Drilling Inc.,449,01 Jan 2025 04:00:00 AM,Drayton Valley,A5L8,Teine Energy Ltd.,,Drill To LD
+2025-01-01,00/12-21-059-26W5/0,TOURMALINE HZ LELAND 12-21-59-26,0516480,A08C,Savanna Drilling Corp.,803,01 Jan 2025 11:45:00 AM,Drayton Valley,A573,Tourmaline Oil Corp.,,Resumption
+2025-01-01,07/02-28-064-03W4/0,IMP 24 V13B-PSW ETHELLK 2-28-64-3,0513871,0Y52,Precision Drilling Corporation,204,01 Jan 2025 08:00:00 AM,Bonnyville,0007,Imperial Oil Resources Limited,,Drill To LD
+2025-01-01,04/04-03-071-08W6/0,OVV HZ 104 ELM 4-3-71-8,0508628,0Y52,Precision Drilling Corporation,520,01 Jan 2025 11:50:00 AM,Grande Prairie,0026,Ovintiv Canada ULC,,Drill To LD
+2025-01-01,00/05-33-078-11W6/0,BIRCHCLIFF HZ PCOUPES 5-33-78-11,0516740,0Y52,Precision Drilling Corporation,226,01 Jan 2025 11:09:00 AM,Grande Prairie,A12R,Birchcliff Energy Ltd.,,Set Surface
+2025-01-01,02/02-10-083-16W5/0,HWX 102 HZ SEAL 2-10-83-16,0516087,A2CL,Komat Drilling Ltd.,4,31 Dec 2024 06:30:00 PM,St. Albert,A8DL,Headwater Exploration Inc.,,Set Surface
+

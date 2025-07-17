@@ -118,6 +118,9 @@ fn write_spud_data_to_csv(spud_data: Vec<SpudData>, filename: &str) -> Result<()
         wtr.serialize(data)?;
     }
     wtr.flush()?;
+    // Add a newline character at the end of the file
+    use std::io::Write;
+    wtr.into_inner().unwrap().write_all(b"\n")?;
     Ok(())
 }
 

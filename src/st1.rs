@@ -42,24 +42,24 @@ fn trim_and_remove_empty_lines(lines: Vec<String>) -> Vec<String> {
 
 fn extract_licences_lines(lines: &[String]) -> Result<Vec<String>, AppError> {
     let mut licences_lines: Vec<String> = Vec::new();
-    let mut breaks = lines
-        .iter()
-        .enumerate()
-        .filter(|(_, line)| line.contains("---") && !line.contains("END OF"))
-        .map(|(i, _)| i);
 
-    let start = breaks.nth(1).ok_or_else(|| {
-        AppError::FileProcessing("Could not find start of licences section".to_string())
-    })?;
-
-    let end = breaks.next().unwrap_or(lines.len());
-
-    for i in start + 1..end {
-        if lines[i].contains("AMENDMENTS OF WELL LICENCES")
-            || lines[i].contains("END OF WELL LICENCES DAILY LIST")
-        {
+    let mut start_index = 0;
+    for (i, line) in lines.iter().enumerate() {
+        if line.contains("WELL NAME") && line.contains("LICENCE NUMBER") {
+            start_index = i + 6; // 6 lines after the header line is where the first license starts
             break;
         }
+    }
+
+    let mut end_index = lines.len();
+    for (i, line) in lines.iter().enumerate() {
+        if i > start_index && (line.contains("WELL LICENCES CANCELLED") || line.contains("AMENDMENTS OF WELL LICENCES") || line.contains("END OF WELL LICENCES DAILY LIST")) {
+            end_index = i;
+            break;
+        }
+    }
+
+    for i in start_index..end_index {
         licences_lines.push(lines[i].to_string());
     }
 
@@ -142,7 +142,10 @@ pub async fn process_file(filename: &str) -> Result<(), AppError> {
     let formatted_date = extract_date(&lines_trimmed)?;
 
     let licences_lines = extract_licences_lines(&lines_trimmed)?;
-    let licences = extract_license(licences_lines, formatted_date);
+    let licences_lines_trimmed = trim_and_remove_empty_lines(licences_lines);
+    log::info!("Extracted and trimmed licences_lines: {:#?}", licences_lines_trimmed);
+    let licences = extract_license(licences_lines_trimmed, formatted_date);
+    log::info!("Extracted licences: {:#?}", licences);
     write_licence_to_csv(licences, filename)?;
     Ok(())
 }
