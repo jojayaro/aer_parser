@@ -2,6 +2,25 @@
 
 This document outlines the usage of the `aer_parser` command-line interface.
 
+## General Principles
+
+*   **Small, Incremental Changes:** I will make small, focused changes to the codebase.
+*   **Test After Each Change:** After every change, I will run the appropriate tests to ensure that the change has not introduced any regressions.
+*   **Commit Frequently:** I will commit my changes frequently, with clear and descriptive commit messages.
+*   **Follow Best Practices:** I will adhere to Rust best practices for code style, error handling, and performance.
+*   **Clear Communication:** I will keep you informed of my progress and any issues I encounter.
+
+## Error Handling and Logging
+
+*   **Use `thiserror` for custom error types:** I will use the `thiserror` crate to create custom error types that provide clear and informative error messages.
+*   **Implement comprehensive error handling:** I will ensure that all potential errors are handled gracefully.
+*   **Add logging where appropriate:** I will add logging statements to help with debugging and monitoring the application.
+
+## Refactoring
+
+*   **Break down large functions:** I will break down large functions into smaller, more manageable functions.
+*   **Improve readability:** I will improve the readability of the code by using clear and concise variable names, and by adding comments where necessary.
+
 ## Commands
 
 ### `file`
