@@ -1,10 +1,9 @@
 use crate::AppError;
 use chrono::NaiveDate;
-use log::{info, warn};
+use log::info;
 use serde::{Deserialize, Serialize};
-use std::fs::{self, File};
-use std::io::{BufRead, BufReader};
 use std::path::Path;
+use crate::utils::{open_file_lines, process_folder_generic};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct SpudData {
@@ -21,14 +20,6 @@ struct SpudData {
     licensee: String,
     new_projected_total_depth: String,
     activity_type: String,
-}
-
-fn open_file_lines(filename: &str) -> Result<Vec<String>, std::io::Error> {
-    let path = Path::new(filename);
-    let file = File::open(&path)?;
-    let content = BufReader::new(file);
-    let lines: Vec<String> = content.lines().collect::<Result<_, _>>()?;
-    Ok(lines)
 }
 
 fn extract_data_and_separator(lines: &[String]) -> (Vec<String>, Option<String>) {
@@ -107,20 +98,17 @@ fn extract_spud_data(lines: Vec<String>, date: String, separator: &str) -> Vec<S
     spud_data_list
 }
 
-fn write_spud_data_to_csv(spud_data: Vec<SpudData>, filename: &str) -> Result<(), AppError> {
+fn write_spud_data_to_csv(spud_data: Vec<SpudData>, filename: &str, csv_output_dir: &str) -> Result<(), AppError> {
     let output_filename = Path::new(filename)
         .file_stem()
         .and_then(|s| s.to_str())
         .unwrap_or("output");
 
-    let mut wtr = csv::Writer::from_path(format!("CSV/{}.csv", output_filename))?;
+    let mut wtr = csv::Writer::from_path(format!("{}/{}.csv", csv_output_dir, output_filename))?;
     for data in spud_data {
         wtr.serialize(data)?;
     }
     wtr.flush()?;
-    // Add a newline character at the end of the file
-    use std::io::Write;
-    wtr.into_inner().unwrap().write_all(b"\n")?;
     Ok(())
 }
 
@@ -131,7 +119,7 @@ fn extract_date(lines: &[String]) -> Result<String, AppError> {
     Ok(parsed_date.format("%Y-%m-%d").to_string())
 }
 
-pub async fn process_file(filename: &str) -> Result<(), AppError> {
+pub async fn process_file(filename: &str, csv_output_dir: &str) -> Result<(), AppError> {
     let lines = open_file_lines(filename)?;
     
     let formatted_date = extract_date(&lines)?;
@@ -139,7 +127,7 @@ pub async fn process_file(filename: &str) -> Result<(), AppError> {
     let (spud_data_lines, separator_line) = extract_data_and_separator(&lines);
     if let Some(separator) = separator_line {
         let spud_data = extract_spud_data(spud_data_lines, formatted_date, &separator);
-        write_spud_data_to_csv(spud_data, filename)?;
+        write_spud_data_to_csv(spud_data, filename, csv_output_dir)?;
     } else {
         return Err(AppError::FileProcessing("Separator line not found in file".to_string()));
     }
@@ -147,28 +135,11 @@ pub async fn process_file(filename: &str) -> Result<(), AppError> {
     Ok(())
 }
 
-pub async fn process_folder(folder_path: &str) -> Result<(), AppError> {
-    let folder = Path::new(folder_path);
-    if !folder.is_dir() {
-        return Err(AppError::FileProcessing(format!(
-            "{} is not a valid directory",
-            folder_path
-        )));
-    }
-
-    for entry in fs::read_dir(folder)? {
-        let entry = entry?;
-        let path = entry.path();
-        if path.is_file() {
-            if let Some(filename) = path.to_str() {
-                if filename.contains("SPUD") && filename.ends_with(".TXT") {
-                    info!("Processing file: {}", filename);
-                    if let Err(e) = process_file(filename).await {
-                        warn!("Failed to process file {}: {}", filename, e);
-                    }
-                }
-            }
-        }
-    }
-    Ok(())
+pub async fn process_folder(folder_path: &str, csv_output_dir: &str) -> Result<(), AppError> {
+    let csv_output_dir = csv_output_dir.to_string();
+    process_folder_generic(folder_path, "SPUD", move |filename_str| {
+        let csv_output_dir = csv_output_dir.clone();
+        let filename_owned = filename_str.to_string();
+        Box::pin(async move { process_file(&filename_owned, &csv_output_dir).await })
+    }).await
 }

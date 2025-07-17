@@ -2,9 +2,8 @@ use crate::AppError;
 use chrono::NaiveDate;
 use log::{info, warn};
 use serde::{Deserialize, Serialize};
-use std::fs::{self, File};
-use std::io::{BufRead, BufReader};
 use std::path::Path;
+use crate::utils::{open_file_lines, process_folder_generic};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct License {
@@ -26,14 +25,6 @@ struct License {
     substance: String,
     licensee: String,
     surface_location: String,
-}
-
-fn open_file_lines(filename: &str) -> Result<Vec<String>, std::io::Error> {
-    let path = Path::new(filename);
-    let file = File::open(&path)?;
-    let content = BufReader::new(file);
-    let lines: Vec<String> = content.lines().collect::<Result<_, _>>()?;
-    Ok(lines)
 }
 
 fn trim_and_remove_empty_lines(lines: Vec<String>) -> Vec<String> {
@@ -105,13 +96,13 @@ fn extract_license(lines: Vec<String>, date: String) -> Vec<License> {
     licences
 }
 
-fn write_licence_to_csv(licences: Vec<License>, filename: &str) -> Result<(), AppError> {
+fn write_licence_to_csv(licences: Vec<License>, filename: &str, csv_output_dir: &str) -> Result<(), AppError> {
     let output_filename = Path::new(filename)
         .file_stem()
         .and_then(|s| s.to_str())
         .unwrap_or("output");
     
-    let mut wtr = csv::Writer::from_path(format!("CSV/{}.csv", output_filename))?;
+    let mut wtr = csv::Writer::from_path(format!("{}/{}.csv", csv_output_dir, output_filename))?;
     for licence in licences {
         wtr.serialize(licence)?;
     }
@@ -135,7 +126,7 @@ fn extract_date(lines: &[String]) -> Result<String, AppError> {
     Ok(parsed_date.format("%Y-%m-%d").to_string())
 }
 
-pub async fn process_file(filename: &str) -> Result<(), AppError> {
+pub async fn process_file(filename: &str, csv_output_dir: &str) -> Result<(), AppError> {
     let lines = open_file_lines(filename)?;
     let lines_trimmed = trim_and_remove_empty_lines(lines);
 
@@ -146,32 +137,15 @@ pub async fn process_file(filename: &str) -> Result<(), AppError> {
     log::info!("Extracted and trimmed licences_lines: {:#?}", licences_lines_trimmed);
     let licences = extract_license(licences_lines_trimmed, formatted_date);
     log::info!("Extracted licences: {:#?}", licences);
-    write_licence_to_csv(licences, filename)?;
+    write_licence_to_csv(licences, filename, csv_output_dir)?;
     Ok(())
 }
 
-pub async fn process_folder(folder_path: &str) -> Result<(), AppError> {
-    let folder = Path::new(folder_path);
-    if !folder.is_dir() {
-        return Err(AppError::FileProcessing(format!(
-            "{} is not a valid directory",
-            folder_path
-        )));
-    }
-
-    for entry in fs::read_dir(folder)? {
-        let entry = entry?;
-        let path = entry.path();
-        if path.is_file() {
-            if let Some(filename) = path.to_str() {
-                if filename.contains("WELLS") && filename.ends_with(".TXT") {
-                    info!("Processing file: {}", filename);
-                    if let Err(e) = process_file(filename).await {
-                        warn!("Failed to process file {}: {}", filename, e);
-                    }
-                }
-            }
-        }
-    }
-    Ok(())
+pub async fn process_folder(folder_path: &str, csv_output_dir: &str) -> Result<(), AppError> {
+    let csv_output_dir = csv_output_dir.to_string();
+    process_folder_generic(folder_path, "WELLS", move |filename_str| {
+        let csv_output_dir = csv_output_dir.clone();
+        let filename_owned = filename_str.to_string();
+        Box::pin(async move { process_file(&filename_owned, &csv_output_dir).await })
+    }).await
 }

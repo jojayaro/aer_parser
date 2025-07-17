@@ -32,7 +32,7 @@ async fn test_st1_processing_and_csv_output() -> Result<(), Box<dyn std::error::
     fs::create_dir_all(actual_output_file_path.parent().unwrap())?;
 
     // Process the ST1 file
-    st1::process_file(input_file_path.to_str().unwrap()).await?;
+    st1::process_file(input_file_path.to_str().unwrap(), "CSV").await?;
 
     // Read the content of the generated CSV and the expected CSV
     let mut actual_csv_content = String::new();
@@ -62,7 +62,7 @@ async fn test_st49_processing_and_csv_output() -> Result<(), Box<dyn std::error:
     fs::create_dir_all(actual_output_file_path.parent().unwrap())?;
 
     // Process the ST49 file
-    st49::process_file(input_file_path.to_str().unwrap()).await?;
+    st49::process_file(input_file_path.to_str().unwrap(), "CSV").await?;
 
     // Read the content of the generated CSV and the expected CSV
     let mut actual_csv_content = String::new();

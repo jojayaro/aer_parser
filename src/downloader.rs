@@ -31,6 +31,7 @@ async fn download_file(
     client: &reqwest::Client,
     date: NaiveDate,
     report_type: &ReportType,
+    txt_output_dir: &str,
 ) -> Result<String, AppError> {
     let (url_prefix, file_prefix, extension) = match report_type {
         ReportType::St1 => (
@@ -43,7 +44,7 @@ async fn download_file(
 
     let filename_date = date.format("%m%d").to_string();
     let url = format!("{}{}.{}", url_prefix, filename_date, extension);
-    let filepath = format!("TXT/{}{}.{}", file_prefix, filename_date, extension);
+    let filepath = format!("{}/{}{}.{}", txt_output_dir, file_prefix, filename_date, extension);
 
     download_and_save_file(client, &url, &filepath).await?;
 
@@ -54,13 +55,14 @@ pub async fn download_files_by_date_range(
     report_type: ReportType,
     start_date: NaiveDate,
     end_date: NaiveDate,
+    txt_output_dir: &str,
 ) -> Result<Vec<String>, AppError> {
     let client = reqwest::Client::new();
     let mut tasks = Vec::new();
     let mut current_date = start_date;
 
     while current_date <= end_date {
-        tasks.push(download_file(&client, current_date, &report_type));
+        tasks.push(download_file(&client, current_date, &report_type, txt_output_dir));
         current_date += Duration::days(1);
     }
 
