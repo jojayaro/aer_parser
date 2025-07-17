@@ -22,9 +22,8 @@ The application is structured as a library crate with a binary executable, promo
 
 3.  **Parsing (`src/st1.rs`, `src/st49.rs`)**:
     *   Each report type has its own dedicated parsing module.
-    *   **`st1.rs`**: Parses the 5-line records of the ST1 well licence reports.
-    *   **`st49.rs`**: Parses the single-line records of the ST49 spud reports.
-    *   Both parsers extract data from fixed-width columns using string slicing.
+    *   **`st1.rs`**: Parses the 5-line records of the ST1 well licence reports using fixed-width string slicing.
+    *   **`st49.rs`**: Parses single-line records from ST49 spud reports. It dynamically determines column boundaries by analyzing the separator line (`---`), making it resilient to format changes.
 
 4.  **Output**: The parsed data, held in a `Vec<License>` (for ST1) or `Vec<SpudData>` (for ST49), is serialized into a CSV file in the `CSV/` directory using the `csv` crate.
 
@@ -67,6 +66,6 @@ The application is run via `cargo run` with the report type, a command, and its 
 
 ## Project-Specific Conventions
 
--   **Parsing Logic is Fragile**: The parsing logic is tightly coupled to the fixed-width format of the source files. Any change in the AER's report formats will likely break the parser.
+-   **Parsing Logic**: The `st49` parser dynamically calculates column widths from the report's separator line, making it robust. However, the `st1` parser still uses fixed-width logic and is fragile to format changes.
 -   **Error Handling**: The application uses a custom `AppError` enum and the `thiserror` crate for robust and descriptive error handling.
 -   **Dependencies**: Key external dependencies are `tokio`, `reqwest`, `futures`, `csv`, `chrono`, and `thiserror`. These are defined in `Cargo.toml`.
