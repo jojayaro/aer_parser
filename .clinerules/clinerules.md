@@ -1,35 +1,41 @@
 # Copilot Instructions
 
-This document provides guidance for AI agents working on the `aer_st1` codebase.
+This document provides guidance for AI agents working on the `aer_parser` codebase.
 
 ## Project Overview
 
-This is a Rust command-line application designed to parse oil and gas exploration license data from the Alberta Energy Regulator's (AER) ST1 statistical reports. It downloads fixed-width text files (`.TXT`), parses them, and outputs the structured data into CSV files.
+This is a Rust command-line application designed to parse oil and gas exploration license data from the Alberta Energy Regulator's (AER) statistical reports. It supports both ST1 (Well Licence) and ST49 (Spud) reports. It downloads fixed-width text files (`.TXT`), parses them, and outputs the structured data into CSV files.
 
-The core logic resides entirely in `src/main.rs`.
+The application is structured as a library crate with a binary executable, promoting modularity and separation of concerns.
 
 ## Architecture and Data Flow
 
-1.  **Input**: The application can be initiated via three command-line arguments:
-    *   `file`: Processes a single local `.TXT` file.
-    *   `folder`: Processes all `.TXT` files in a specified directory.
-    *   `date_range`: Downloads files for a given date range and then processes them.
+1.  **Input**: The application is controlled via command-line arguments, specifying the report type (`st1` or `st49`) and the desired action (`file`, `folder`, or `date_range`).
 
-2.  **Downloading**: The `download_file` and `download_files_by_date_range` async functions use `reqwest` and `tokio` to fetch data from the AER website (`https://static.aer.ca/prd/data/well-lic/WELLS{MMDD}.TXT`). Downloaded files are saved in the `TXT/` directory.
+2.  **Downloading (`src/downloader.rs`)**:
+    *   The `download_files_by_date_range` function fetches files concurrently for a given date range.
+    *   It uses `reqwest` for HTTP requests and `futures::future::join_all` for parallel execution, significantly speeding up the download process.
+    *   It dynamically constructs the URL based on the report type:
+        *   **ST1**: `https://static.aer.ca/prd/data/well-lic/WELLS{MMDD}.TXT`
+        *   **ST49**: `https://static.aer.ca/prd/data/wells/SPUD{MMDD}.TXT`
+    *   Downloaded files are saved in the `TXT/` directory.
 
-3.  **Parsing**: The `process_file` function orchestrates the parsing.
-    *   It reads the `.TXT` file line by line.
-    *   `Indices::search` finds the key structural markers in the file: the date line and the data section separators (`---`).
-    *   `extract_licences_lines` isolates the lines containing the actual license data.
-    *   `extract_license` is the core parsing function. It processes 5 lines at a time, extracting data from fixed-width columns using string slicing (`get(start..end)`). The layout is rigid and specific to the AER ST1 format.
+3.  **Parsing (`src/st1.rs`, `src/st49.rs`)**:
+    *   Each report type has its own dedicated parsing module.
+    *   **`st1.rs`**: Parses the 5-line records of the ST1 well licence reports.
+    *   **`st49.rs`**: Parses the single-line records of the ST49 spud reports.
+    *   Both parsers extract data from fixed-width columns using string slicing.
 
-4.  **Output**: The parsed data, held in a `Vec<License>`, is serialized into a CSV file in the `CSV/` directory using the `csv` crate. The output filename mirrors the input filename (e.g., `WELLS0101.TXT` becomes `CSV/WELLS0101.csv`).
+4.  **Output**: The parsed data, held in a `Vec<License>` (for ST1) or `Vec<SpudData>` (for ST49), is serialized into a CSV file in the `CSV/` directory using the `csv` crate.
 
 ## Key Files and Structs
 
--   `src/main.rs`: Contains the entire application logic.
--   `License`: The `struct` that defines the schema for the output data. Any changes to the data being extracted must be reflected here.
--   `Indices`: A helper `struct` for locating important lines within the source `.TXT` file before parsing.
+-   `src/main.rs`: The binary entry point. Parses command-line arguments and calls the appropriate functions from the library.
+-   `src/lib.rs`: The library root. Defines the `ReportType` enum and orchestrates the calls to the downloader and parser modules.
+-   `src/error.rs`: Defines the custom `AppError` enum for centralized error handling using `thiserror`.
+-   `src/downloader.rs`: Contains the parallel download logic.
+-   `src/st1.rs`: Contains the `License` struct and all parsing logic for ST1 reports.
+-   `src/st49.rs`: Contains the `SpudData` struct and all parsing logic for ST49 reports.
 
 ## Developer Workflows
 
@@ -42,26 +48,25 @@ cargo build
 
 ### Running the Parser
 
-The application is run via `cargo run` with specific subcommands and arguments.
+The application is run via `cargo run` with the report type, a command, and its arguments.
 
--   **Process a single file from the `TXT` directory:**
+-   **Process a single ST49 file:**
     ```sh
-    cargo run file WELLS0101.TXT
-    ```
-    *(Note: The code prepends `TXT/` if a simple filename is provided)*
-
--   **Process all files in a local folder (e.g., `TXT/`):**
-    ```sh
-    cargo run folder TXT
+    cargo run st49 file TXT/SPUD0101.TXT
     ```
 
--   **Download and process files for a date range within the current year:**
+-   **Process all ST1 files in a folder:**
     ```sh
-    cargo run date_range 2025-01-01 2025-01-31
+    cargo run st1 folder TXT
+    ```
+
+-   **Download and process ST49 files for a date range:**
+    ```sh
+    cargo run st49 date_range 2025-01-01 2025-01-31
     ```
 
 ## Project-Specific Conventions
 
--   **Parsing Logic is Fragile**: The parsing in `extract_license` is tightly coupled to the fixed-width format of the source `.TXT` files. Any change in the AER's report format will break the parser. When modifying this, be mindful of the 5-line record structure and the exact character indices for each field.
--   **Error Handling**: The application uses `Result<T, Box<dyn std::error::Error>>` for error handling. Errors are generally propagated up to `main`.
--   **Dependencies**: Key external dependencies are `tokio` for async operations, `reqwest` for HTTP requests, `csv` for serialization, and `chrono` for date handling. These are defined in `Cargo.toml`.
+-   **Parsing Logic is Fragile**: The parsing logic is tightly coupled to the fixed-width format of the source files. Any change in the AER's report formats will likely break the parser.
+-   **Error Handling**: The application uses a custom `AppError` enum and the `thiserror` crate for robust and descriptive error handling.
+-   **Dependencies**: Key external dependencies are `tokio`, `reqwest`, `futures`, `csv`, `chrono`, and `thiserror`. These are defined in `Cargo.toml`.
