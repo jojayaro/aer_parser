@@ -1,10 +1,31 @@
+use crate::error::AppError;
+use crate::ReportType;
 use chrono::{Duration, NaiveDate};
 use futures::future::join_all;
+use log::{debug, error, info};
 use reqwest;
 use std::fs::File;
 use std::io::Write;
 
-use crate::{AppError, ReportType};
+async fn download_and_save_file(client: &reqwest::Client, url: &str, file_path: &str) -> Result<(), AppError> {
+    info!("Downloading file from {}", url);
+    let response = client.get(url).send().await?;
+
+    if !response.status().is_success() {
+        return Err(AppError::Download(format!(
+            "Failed to download file from {}: status {}",
+            url,
+            response.status()
+        )));
+    }
+
+    let bytes = response.bytes().await?;
+    debug!("Saving file to {}", file_path);
+    let mut file = File::create(file_path)?;
+    file.write_all(&bytes)?;
+    info!("Successfully downloaded and saved file to {}", file_path);
+    Ok(())
+}
 
 async fn download_file(
     client: &reqwest::Client,
@@ -22,20 +43,9 @@ async fn download_file(
 
     let filename_date = date.format("%m%d").to_string();
     let url = format!("{}{}.{}", url_prefix, filename_date, extension);
-    let response = client.get(&url).send().await?;
-
-    if !response.status().is_success() {
-        return Err(AppError::Download(format!(
-            "Failed to download file from {}: status {}",
-            url,
-            response.status()
-        )));
-    }
-
-    let bytes = response.bytes().await?;
     let filepath = format!("TXT/{}{}.{}", file_prefix, filename_date, extension);
-    let mut file = File::create(&filepath)?;
-    file.write_all(&bytes)?;
+
+    download_and_save_file(client, &url, &filepath).await?;
 
     Ok(filename_date)
 }
@@ -59,7 +69,7 @@ pub async fn download_files_by_date_range(
     for result in results {
         match result {
             Ok(filename) => downloaded_files.push(filename),
-            Err(e) => eprintln!("A file download failed: {}", e), // Log error but continue
+            Err(e) => error!("A file download failed: {}", e), // Log error but continue
         }
     }
 

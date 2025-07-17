@@ -1,15 +1,17 @@
-use std::env;
+use aer_st1::{process_date_range, process_file, process_folder, AppError, ReportType};
 use chrono::NaiveDate;
-use aer_st1::{process_date_range, process_file, process_folder, ReportType, AppError};
+use log::{error, info};
+use std::env;
 
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
+    env_logger::init();
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 3 {
-        eprintln!("Usage: {} <report_type> <file|folder|date_range> [args...]", args[0]);
-        eprintln!("Example: {} st1 file TXT/WELLS0101.TXT", args[0]);
-        eprintln!("Example: {} st49 date_range 2025-01-01 2025-01-31", args[0]);
+        error!("Usage: {} <report_type> <file|folder|date_range> [args...]", args[0]);
+        error!("Example: {} st1 file TXT/WELLS0101.TXT", args[0]);
+        error!("Example: {} st49 date_range 2025-01-01 2025-01-31", args[0]);
         std::process::exit(1);
     }
 
@@ -22,7 +24,7 @@ async fn main() -> Result<(), AppError> {
                 return Err(AppError::Cli(format!("Usage: {} {} file <filename>", args[0], args[1])));
             }
             let filename = &args[3];
-            println!("Processing file: {}", filename);
+            info!("Processing file: {}", filename);
             process_file(report_type, filename).await?;
         }
         "folder" => {
@@ -30,7 +32,7 @@ async fn main() -> Result<(), AppError> {
                 return Err(AppError::Cli(format!("Usage: {} {} folder <folder_path>", args[0], args[1])));
             }
             let folder_path = &args[3];
-            println!("Processing folder: {}", folder_path);
+            info!("Processing folder: {}", folder_path);
             process_folder(report_type, folder_path).await?;
         }
         "date_range" => {
@@ -39,7 +41,7 @@ async fn main() -> Result<(), AppError> {
             }
             let start_date = NaiveDate::parse_from_str(&args[3], "%Y-%m-%d")?;
             let end_date = NaiveDate::parse_from_str(&args[4], "%Y-%m-%d")?;
-            println!("Downloading and processing from {} to {}", start_date, end_date);
+            info!("Downloading and processing from {} to {}", start_date, end_date);
             process_date_range(report_type, start_date, end_date).await?;
         }
         _ => {
@@ -47,6 +49,6 @@ async fn main() -> Result<(), AppError> {
         }
     }
 
-    println!("Processing complete.");
+    info!("Processing complete.");
     Ok(())
 }

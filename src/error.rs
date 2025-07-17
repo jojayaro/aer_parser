@@ -16,4 +16,6 @@ pub enum AppError {
     Download(String),
     #[error("Invalid command line arguments: {0}")]
     Cli(String),
+    #[error("Task join error: {0}")]
+    Join(#[from] tokio::task::JoinError),
 }
