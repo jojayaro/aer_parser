@@ -1,6 +1,6 @@
-# Gemini Rules
+# CLI Rules
 
-This file outlines the rules and guidelines that I will follow while working on this project.
+This document outlines the usage of the `aer_parser` command-line interface.
 
 ## General Principles
 
@@ -9,6 +9,9 @@ This file outlines the rules and guidelines that I will follow while working on 
 *   **Commit Frequently:** I will commit my changes frequently, with clear and descriptive commit messages.
 *   **Follow Best Practices:** I will adhere to Rust best practices for code style, error handling, and performance.
 *   **Clear Communication:** I will keep you informed of my progress and any issues I encounter.
+*   **Use of `clap` for CLI arguments:** I will use the `clap` crate to handle command-line arguments and options, ensuring a user-friendly interface.
+*   **Ask questions when in doubt and stop:** If I am unsure about a specific implementation detail or design decision, I will stop and ask for clarification.
+*   **Prioritize simplicity and maintainability:** I will strive to keep the code simple and easy to maintain, avoiding unnecessary complexity. No unsafe code is allowed in the project or dependencies.
 
 ## Error Handling and Logging
 
@@ -20,14 +23,118 @@ This file outlines the rules and guidelines that I will follow while working on 
 
 *   **Break down large functions:** I will break down large functions into smaller, more manageable functions.
 *   **Improve readability:** I will improve the readability of the code by using clear and concise variable names, and by adding comments where necessary.
-*   **Use `?` operator for error handling:** I will use the `?` operator to simplify error handling.
 
-## Testing
+## Commands
 
-*   **Write unit tests:** I will write unit tests for individual functions and modules.
-*   **Write integration tests:** I will write integration tests to ensure that the different parts of the application work together correctly.
-*   **Test data consistency:** I will write tests to verify that the data in the text files and the generated CSV files is consistent.
+### `file`
 
-## Next Steps
+Processes a single raw report file and converts it to a CSV.
 
-*   **Integration tests for ST1 and ST49 data consistency have been implemented and verified.**
+**Arguments:**
+-   `--report-type`: The type of report to process (`st1` or `st49`).
+-   `filename`: The path to the file to process.
+-   `--csv-output-dir`: (Optional) The directory to save the generated CSV file. Defaults to `CSV`.
+
+**Usage:**
+```bash
+aer_parser file --report-type st1 /path/to/your/file.txt
+```
+
+### `folder`
+
+Processes all raw report files in a given directory.
+
+**Arguments:**
+-   `--report-type`: The type of report to process (`st1` or `st49`).
+-   `folder_path`: The path to the folder to process.
+-   `--csv-output-dir`: (Optional) The directory to save the generated CSV files. Defaults to `CSV`.
+
+**Usage:**
+```bash
+aer_parser folder --report-type st49 /path/to/your/folder
+```
+
+### `date-range`
+
+Downloads and processes raw report files for a given date range.
+
+**Arguments:**
+-   `--report-type`: The type of report to process (`st1` or `st49`).
+-   `--start-date`: The start date in `YYYY-MM-DD` format.
+-   `--end-date`: The end date in `YYYY-MM-DD` format.
+-   `--txt-output-dir`: (Optional) The directory to save the downloaded raw files. Defaults to `TXT`.
+-   `--csv-output-dir`: (Optional) The directory to save the generated CSV files. Defaults to `CSV`.
+
+**Usage:**
+```bash
+aer_parser date-range --report-type st1 --start-date 2024-01-01 --end-date 2024-01-31
+```
+
+### `load-delta`
+
+Loads CSV files into a Delta table. This command is idempotent and uses a log file to track which CSVs have already been processed.
+
+**Arguments:**
+-   `--report-type`: The type of report to load (`st1` or `st49`).
+-   `--csv-folder`: The path to a folder containing CSV files to load.
+-   `--table-path`: The path to the Delta table.
+-   `--log-path`: (Optional) The path to the log file that tracks processed CSVs. Defaults to `delta_load_log.json`.
+-   `--recreate-table`: (Optional) A flag to delete and recreate the Delta table. **This will also delete the log file**, ensuring a fresh load of all CSVs in the source folder.
+
+**Usage:**
+```bash
+aer_parser load-delta --report-type st1 --csv-folder /path/to/your/csv_folder --table-path /path/to/your/delta_table
+```
+
+## Verification and Debugging
+
+### CSV Verification
+
+Before loading into a Delta table, you can verify the contents of the generated CSV files. This is useful for debugging the parsing logic.
+
+**ST1 CSV Verification:**
+```bash
+# Query the st1 CSVs from the CSV/ directory
+duckdb < ./read_delta_st1_csv.sql
+```
+
+**ST49 CSV Verification:**
+```bash
+# Query the st49 CSVs from the CSV/ directory
+duckdb < ./read_delta_st49_csv.sql
+```
+
+### Delta Table Verification
+
+To verify that the data has been loaded correctly into the Delta table, you can use the following workflow.
+
+**ST1 Verification:**
+```bash
+# Recreate the table and load all st1 CSVs from the CSV/ directory
+RUST_LOG=info cargo run --bin aer_parser load-delta --report-type st1 --csv-folder CSV --table-path st1 --recreate-table
+
+# Query the delta table to verify the contents
+duckdb < ./read_delta_st1.sql
+
+# Compare the delta table with the CSV files
+duckdb < ./st1_csv_delta_comparison.sql
+```
+
+**ST49 Verification:**
+```bash
+# Recreate the table and load all st49 CSVs from the CSV/ directory
+RUST_LOG=info cargo run --bin aer_parser load-delta --report-type st49 --csv-folder CSV --table-path st49 --recreate-table
+
+# Query the delta table to verify the contents
+duckdb < ./read_delta_st49.sql
+
+# Compare the delta table with the CSV files
+duckdb < ./st49_csv_delta_comparison.sql
+```
+
+### Debugging
+
+To see detailed logging output, set the `RUST_LOG` environment variable to `info`. This is useful for seeing which files are being found and loaded.
+
+```bash
+RUST_LOG=info cargo run --bin aer_parser ...
