@@ -1,9 +1,10 @@
-use std::fs::{self, File};
-use std::io::{BufReader, BufRead};
-use std::path::Path;
-use chrono::NaiveDate;
-use serde::{Serialize, Deserialize};
 use crate::AppError;
+use chrono::NaiveDate;
+use log::{info, warn};
+use serde::{Deserialize, Serialize};
+use std::fs::{self, File};
+use std::io::{BufRead, BufReader};
+use std::path::Path;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct SpudData {
@@ -120,18 +121,24 @@ fn write_spud_data_to_csv(spud_data: Vec<SpudData>, filename: &str) -> Result<()
     Ok(())
 }
 
-pub async fn process_file(filename: &str) -> Result<(), AppError> {
-    let lines = open_file_lines(filename)?;
-    
+fn extract_date(lines: &[String]) -> Result<String, AppError> {
     let date_line = lines.get(1).ok_or_else(|| AppError::FileProcessing("Date line not found".to_string()))?;
     let date_str = date_line.split_whitespace().skip(2).take(3).collect::<Vec<&str>>().join(" ");
     let parsed_date = NaiveDate::parse_from_str(&date_str, "%d %B %Y")?;
-    let formatted_date = parsed_date.format("%Y-%m-%d").to_string();
+    Ok(parsed_date.format("%Y-%m-%d").to_string())
+}
+
+pub async fn process_file(filename: &str) -> Result<(), AppError> {
+    let lines = open_file_lines(filename)?;
+    
+    let formatted_date = extract_date(&lines)?;
 
     let (spud_data_lines, separator_line) = extract_data_and_separator(&lines);
     if let Some(separator) = separator_line {
         let spud_data = extract_spud_data(spud_data_lines, formatted_date, &separator);
         write_spud_data_to_csv(spud_data, filename)?;
+    } else {
+        return Err(AppError::FileProcessing("Separator line not found in file".to_string()));
     }
 
     Ok(())
@@ -140,17 +147,22 @@ pub async fn process_file(filename: &str) -> Result<(), AppError> {
 pub async fn process_folder(folder_path: &str) -> Result<(), AppError> {
     let folder = Path::new(folder_path);
     if !folder.is_dir() {
-        return Err(AppError::FileProcessing(format!("{} is not a valid directory", folder_path)));
+        return Err(AppError::FileProcessing(format!(
+            "{} is not a valid directory",
+            folder_path
+        )));
     }
 
     for entry in fs::read_dir(folder)? {
         let entry = entry?;
         let path = entry.path();
-        if path.is_file() && path.extension().and_then(|s| s.to_str()) == Some("TXT") {
-            if let Some(filename) = path.file_name().and_then(|s| s.to_str()) {
-                if filename.starts_with("SPUD") {
-                    println!("Processing file: {}", path.display());
-                    process_file(path.to_str().unwrap_or_default()).await?;
+        if path.is_file() {
+            if let Some(filename) = path.to_str() {
+                if filename.contains("SPUD") && filename.ends_with(".TXT") {
+                    info!("Processing file: {}", filename);
+                    if let Err(e) = process_file(filename).await {
+                        warn!("Failed to process file {}: {}", filename, e);
+                    }
                 }
             }
         }
