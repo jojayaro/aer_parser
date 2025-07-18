@@ -4,6 +4,7 @@ use aer_st1::{
 use chrono::NaiveDate;
 use clap::{Parser, Subcommand};
 use log::info;
+use std::path::Path;
 mod delta;
 
 #[derive(Parser, Debug)]
@@ -23,7 +24,7 @@ enum Commands {
         /// The path to the file to process
         filename: String,
         /// Optional: Output directory for CSV files
-        #[arg(long, default_value = "CSV")]
+        #[arg(long, default_value = "data/csv")]
         csv_output_dir: String,
     },
     /// Process all files in a folder
@@ -34,7 +35,7 @@ enum Commands {
         /// The path to the folder to process
         folder_path: String,
         /// Optional: Output directory for CSV files
-        #[arg(long, default_value = "CSV")]
+        #[arg(long, default_value = "data/csv")]
         csv_output_dir: String,
     },
     /// Download and process files within a date range
@@ -49,10 +50,10 @@ enum Commands {
         #[arg(long)]
         end_date: NaiveDate,
         /// Optional: Output directory for TXT files
-        #[arg(long, default_value = "TXT")]
+        #[arg(long, default_value = "data/txt")]
         txt_output_dir: String,
         /// Optional: Output directory for CSV files
-        #[arg(long, default_value = "CSV")]
+        #[arg(long, default_value = "data/csv")]
         csv_output_dir: String,
     },
     /// Process all files in a zip folder
@@ -62,8 +63,11 @@ enum Commands {
         report_type: ReportType,
         /// The path to the folder to process
         folder_path: String,
+        /// Optional: Output directory for TXT files
+        #[arg(long, default_value = "data/txt")]
+        txt_output_dir: String,
         /// Optional: Output directory for CSV files
-        #[arg(long, default_value = "CSV")]
+        #[arg(long, default_value = "data/csv")]
         csv_output_dir: String,
     },
     /// Load CSV(s) into a Delta table
@@ -100,15 +104,26 @@ async fn main() -> Result<(), AppError> {
             filename,
             csv_output_dir,
         } => {
-            info!("Processing file: {}", filename);
-            process_file(*report_type, filename, csv_output_dir, None, None).await?;
+            info!("Processing file: {filename}");
+            let file_path = Path::new(filename);
+            let txt_input_dir = file_path.parent().unwrap().to_str().unwrap();
+            let filename_stem = file_path.file_stem().unwrap().to_str().unwrap();
+            process_file(
+                *report_type,
+                filename_stem,
+                txt_input_dir,
+                csv_output_dir,
+                None,
+                None,
+            )
+            .await?;
         }
         Commands::Folder {
             report_type,
             folder_path,
             csv_output_dir,
         } => {
-            info!("Processing folder: {}", folder_path);
+            info!("Processing folder: {folder_path}");
             process_folder(*report_type, folder_path, csv_output_dir).await?;
         }
         Commands::DateRange {
@@ -118,10 +133,7 @@ async fn main() -> Result<(), AppError> {
             txt_output_dir,
             csv_output_dir,
         } => {
-            info!(
-                "Downloading and processing from {} to {}",
-                start_date, end_date
-            );
+            info!("Downloading and processing from {start_date} to {end_date}");
             process_date_range(
                 *report_type,
                 *start_date,
@@ -134,10 +146,11 @@ async fn main() -> Result<(), AppError> {
         Commands::Zip {
             report_type,
             folder_path,
+            txt_output_dir,
             csv_output_dir,
         } => {
-            info!("Processing zip folder: {}", folder_path);
-            process_zip_folder(*report_type, folder_path, csv_output_dir).await?;
+            info!("Processing zip folder: {folder_path}");
+            process_zip_folder(*report_type, folder_path, txt_output_dir, csv_output_dir).await?;
         }
         Commands::LoadDelta {
             report_type,
@@ -166,11 +179,11 @@ async fn main() -> Result<(), AppError> {
             if *recreate_table {
                 let table_path_obj = Path::new(table_path);
                 if table_path_obj.exists() {
-                    info!("Recreating delta table at {}", table_path);
+                    info!("Recreating delta table at {table_path}");
                     std::fs::remove_dir_all(table_path_obj)?;
                 }
                 if log_path.exists() {
-                    info!("Removing log file at {:?}", log_path);
+                    info!("Removing log file at {log_path:?}");
                     std::fs::remove_file(&log_path)?;
                 }
             }
@@ -186,7 +199,7 @@ async fn main() -> Result<(), AppError> {
 
             let mut csv_files = Vec::new();
             if let Some(folder) = csv_folder {
-                info!("Searching for CSV files in folder: {}", folder);
+                info!("Searching for CSV files in folder: {folder}");
                 let prefix = match report_type {
                     ReportType::St1 => "WELLS",
                     ReportType::St49 => "SPUD",
@@ -201,10 +214,10 @@ async fn main() -> Result<(), AppError> {
                             if !processed_files
                                 .contains(&canonical_path.to_string_lossy().to_string())
                             {
-                                info!("Found CSV file: {:?}", path);
+                                info!("Found CSV file: {path:?}");
                                 csv_files.push(path);
                             } else {
-                                info!("Skipping already processed file: {:?}", path);
+                                info!("Skipping already processed file: {path:?}");
                             }
                         }
                     }
@@ -216,26 +229,27 @@ async fn main() -> Result<(), AppError> {
                 if !processed_files.contains(&canonical_path.to_string_lossy().to_string()) {
                     csv_files.push(path);
                 } else {
-                    info!("Skipping already processed file: {:?}", path);
+                    info!("Skipping already processed file: {path:?}");
                 }
             }
 
             for csv in csv_files {
                 match load_csv_to_delta(&mut table, &csv).await {
                     Ok(loaded_rows) => {
-                        info!("Loaded {} rows from {:?}", loaded_rows, csv);
+                        info!("Loaded {loaded_rows} rows from {csv:?}");
                         log_loaded_csv(&log_path, &csv)?;
                     }
                     Err(e) => {
-                        eprintln!("Failed to load CSV file {:?}: {}", csv, e);
+                        eprintln!("Failed to load CSV file {csv:?}: {e}");
+                        aer_st1::move_to_conversion_errors(&csv, &e.to_string()).await?;
                     }
                 }
             }
 
-            info!("Optimizing delta table at {}", table_path);
+            info!("Optimizing delta table at {table_path}");
             let ops = DeltaOps::from(table.clone());
             ops.optimize().await?;
-            info!("Vacuuming delta table at {}", table_path);
+            info!("Vacuuming delta table at {table_path}");
             let ops = DeltaOps::from(table.clone());
             ops.vacuum().with_dry_run(false).await?;
         }

@@ -26,7 +26,7 @@ async fn test_st1_processing_and_csv_output() -> Result<(), Box<dyn std::error::
     // Define paths
     let input_file_path = PathBuf::from("/Users/jayaro/Repos/aer_parser/TXT/WELLS0102.TXT");
     let expected_output_file_path = PathBuf::from("tests/test_data/wells0102_expected.csv");
-    let actual_output_file_path = PathBuf::from("CSV/WELLS0102.csv");
+    let actual_output_file_path = PathBuf::from("CSV/WELLS0102_20140102.csv");
 
     // Ensure the CSV directory exists
     fs::create_dir_all(actual_output_file_path.parent().unwrap())?;
@@ -56,7 +56,7 @@ async fn test_st49_processing_and_csv_output() -> Result<(), Box<dyn std::error:
     // Define paths
     let input_file_path = PathBuf::from("/Users/jayaro/Repos/aer_parser/TXT/SPUD0101.TXT");
     let expected_output_file_path = PathBuf::from("tests/test_data/spud0101_expected.csv");
-    let actual_output_file_path = PathBuf::from("CSV/SPUD0101.csv");
+    let actual_output_file_path = PathBuf::from("CSV/SPUD0101_20140101.csv");
 
     // Ensure the CSV directory exists
     fs::create_dir_all(actual_output_file_path.parent().unwrap())?;

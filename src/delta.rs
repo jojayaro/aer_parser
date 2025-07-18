@@ -144,14 +144,14 @@ fn csv_to_record_batch(
     schema: Arc<deltalake::arrow::datatypes::Schema>,
 ) -> Result<RecordBatch> {
     let file = File::open(csv_path)?;
-    let mut csv_reader = ReaderBuilder::new(Arc::clone(&schema))
+    let csv_reader = ReaderBuilder::new(Arc::clone(&schema))
         .with_header(true)
         .with_delimiter(b'|')
         .build(file)?;
 
     // Collect all records from the CSV into a single RecordBatch
     let mut batches = Vec::new();
-    while let Some(batch) = csv_reader.next() {
+    for batch in csv_reader {
         batches.push(batch?);
     }
 
@@ -180,7 +180,7 @@ pub async fn load_csv_to_delta(table: &mut DeltaTable, csv_path: &Path) -> Resul
     let batch = match csv_to_record_batch(csv_path, Arc::clone(&arrow_schema)) {
         Ok(batch) => batch,
         Err(e) => {
-            warn!("Could not read CSV file {:?}, skipping: {}", csv_path, e);
+            warn!("Could not read CSV file {csv_path:?}, skipping: {e}");
             return Ok(0);
         }
     };

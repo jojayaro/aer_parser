@@ -48,9 +48,7 @@ async fn download_file(
 
     let filename_date = date.format("%m%d").to_string();
     let url = format!("{url_prefix}{filename_date}.{extension}");
-    let filepath = format!(
-        "{txt_output_dir}/{file_prefix}{filename_date}.{extension}"
-    );
+    let filepath = format!("{txt_output_dir}/{file_prefix}{filename_date}.{extension}");
 
     download_and_save_file(client, &url, &filepath).await?;
 

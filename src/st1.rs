@@ -2,7 +2,7 @@ use crate::utils::{open_file_lines, process_folder_generic};
 use crate::AppError;
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
-use std::path::Path;
+use std::path::PathBuf;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct License {
@@ -51,14 +51,19 @@ fn extract_licences_lines(lines: &[String]) -> Result<Vec<String>, AppError> {
     if let Some(start) = start_data_index {
         // Find the end of the "WELL LICENCES ISSUED" data block
         // This is typically marked by the start of the next section or the end of the file
-        for i in start..lines.len() {
-            let line = &lines[i];
+        for (i, line) in lines.iter().enumerate().skip(start) {
             if line.contains("WELL LICENCES UPDATED")
                 || line.contains("WELL LICENCES CANCELLED")
                 || line.contains("AMENDMENTS OF WELL LICENCES")
                 || line.contains("END OF WELL LICENCES DAILY LIST")
+                || line.contains("TOTAL") // Added to catch summary lines
+                || line.contains("PAGE") // Added to catch page numbers
+                || line.contains("END OF WELL LICENCES DAILY LIST") // Specific footer
+                || line.contains("WELL NAME AND U.I.D.") // Specific footer
+                || line.contains("-------------------- END OF WELL LICENCES DAILY LIST  --------------")
+            // Specific footer
             {
-                end_data_index = Some(i);
+                end_data_index = Some(i + start);
                 break;
             }
         }
@@ -67,10 +72,17 @@ fn extract_licences_lines(lines: &[String]) -> Result<Vec<String>, AppError> {
         let end = end_data_index.unwrap_or(lines.len());
 
         // Extract lines between start and end, ensuring they are not just empty or separator lines
-        for i in start..end {
-            let line = &lines[i];
-            // Only add lines that are not empty and not separator lines
-            if !line.trim().is_empty() && !line.contains("--------------------------------------------------------------------------------------------") {
+        for line in lines.iter().take(end).skip(start) {
+            // Only add lines that are not empty, not separator lines, and not likely to be summary/footer
+            if !line.trim().is_empty()
+                && !line.contains("--------------------------------------------------------------------------------------------")
+                && !line.contains("TOTAL") // Heuristic: filter out lines containing "TOTAL"
+                && !line.contains("PAGE")  // Heuristic: filter out lines containing "PAGE"
+                && !line.contains("WELL NAME AND U.I.D.") // Specific footer part
+                && !line.contains("END OF WELL LICENCES DAILY LIST") // Specific footer part
+                && !line.contains("-------------------- END OF WELL LICENCES DAILY LIST  --------------") // Specific footer part
+                && line.len() > 20 // Heuristic: filter out very short lines that are unlikely to be data
+            {
                 licences_lines.push(line.to_string());
             }
         }
@@ -120,18 +132,19 @@ fn extract_license(lines: Vec<String>, date: NaiveDate) -> Vec<License> {
 
 fn write_licence_to_csv(
     licences: Vec<License>,
-    filename: &str,
+    filename_stem: &str,
     csv_output_dir: &str,
+    report_date: NaiveDate,
 ) -> Result<(), AppError> {
     if licences.is_empty() {
         return Ok(());
     }
 
-    let output_filename = Path::new(filename).file_stem().and_then(|s| s.to_str()).unwrap_or("output").to_string();
+    let output_filename = format!("{}_{}.csv", filename_stem, report_date.format("%Y%m%d"));
 
     let mut wtr = csv::WriterBuilder::new()
         .delimiter(b',')
-        .from_path(format!("{csv_output_dir}/{output_filename}.csv"))?;
+        .from_path(format!("{csv_output_dir}/{output_filename}"))?;
     for licence in licences {
         wtr.serialize(licence)?;
     }
@@ -153,33 +166,42 @@ fn extract_date(lines: &[String]) -> Result<NaiveDate, AppError> {
     Ok(parsed_date)
 }
 
-pub async fn process_file(filename: &str, csv_output_dir: &str) -> Result<NaiveDate, AppError> {
-    let lines = open_file_lines(filename)?;
+pub async fn process_file(
+    filename_stem: &str,
+    txt_input_dir: &str,
+    csv_output_dir: &str,
+) -> Result<NaiveDate, AppError> {
+    let lines = open_file_lines(&format!("{txt_input_dir}/{filename_stem}.TXT"))?;
     let lines_trimmed = trim_and_remove_empty_lines(lines);
 
     let extracted_date = extract_date(&lines_trimmed)?;
 
     let licences_lines = extract_licences_lines(&lines_trimmed)?;
     let licences_lines_trimmed = trim_and_remove_empty_lines(licences_lines);
-    log::debug!(
-        "Extracted and trimmed licences_lines: {licences_lines_trimmed:#?}"
-    );
+    log::debug!("Extracted and trimmed licences_lines: {licences_lines_trimmed:#?}");
     let licences = extract_license(licences_lines_trimmed, extracted_date);
     log::debug!("Extracted licences: {licences:#?}");
     if !licences.is_empty() {
-        write_licence_to_csv(licences, filename, csv_output_dir)?;
+        write_licence_to_csv(licences, filename_stem, csv_output_dir, extracted_date)?;
     }
     Ok(extracted_date)
 }
 
 pub async fn process_folder(folder_path: &str, csv_output_dir: &str) -> Result<(), AppError> {
     let csv_output_dir = csv_output_dir.to_string();
+    let folder_path_clone = folder_path.to_string();
     process_folder_generic(folder_path, "WELLS", move |filename_str| {
         let csv_output_dir = csv_output_dir.clone();
-        let filename_owned = filename_str.to_string();
-        Box::pin(async move { 
-            let _ = process_file(&filename_owned, &csv_output_dir).await; // Year is not used in process_folder
-            Ok(()) 
+        let filename_path = PathBuf::from(&filename_str);
+        let filename_stem = filename_path
+            .file_stem()
+            .and_then(|s| s.to_str())
+            .unwrap_or_default()
+            .to_string();
+        let folder_path_clone = folder_path_clone.clone();
+        Box::pin(async move {
+            let _ = process_file(&filename_stem, &folder_path_clone, &csv_output_dir).await; // Year is not used in process_folder
+            Ok(())
         })
     })
     .await
