@@ -1,71 +1,140 @@
-# Copilot Instructions
+# CLI Rules
 
-This document provides guidance for AI agents working on the `aer_parser` codebase.
+This document outlines the usage of the `aer_parser` command-line interface.
 
-## Project Overview
+## General Principles
 
-This is a Rust command-line application designed to parse oil and gas exploration license data from the Alberta Energy Regulator's (AER) statistical reports. It supports both ST1 (Well Licence) and ST49 (Spud) reports. It downloads fixed-width text files (`.TXT`), parses them, and outputs the structured data into CSV files.
+*   **Small, Incremental Changes:** I will make small, focused changes to the codebase.
+*   **Test After Each Change:** After every change, I will run the appropriate tests to ensure that the change has not introduced any regressions.
+*   **Commit Frequently:** I will commit my changes frequently, with clear and descriptive commit messages.
+*   **Follow Best Practices:** I will adhere to Rust best practices for code style, error handling, and performance.
+*   **Clear Communication:** I will keep you informed of my progress and any issues I encounter.
+*   **Use of `clap` for CLI arguments:** I will use the `clap` crate to handle command-line arguments and options, ensuring a user-friendly interface.
+*   **Ask questions when in doubt and stop:** If I am unsure about a specific implementation detail or design decision, I will stop and ask for clarification.
+*   **Prioritize simplicity and maintainability:** I will strive to keep the code simple and easy to maintain, avoiding unnecessary complexity. No unsafe code is allowed in the project or dependencies.
 
-The application is structured as a library crate with a binary executable, promoting modularity and separation of concerns.
+## Error Handling and Logging
 
-## Architecture and Data Flow
+*   **Use `thiserror` for custom error types:** I will use the `thiserror` crate to create custom error types that provide clear and informative error messages.
+*   **Implement comprehensive error handling:** I will ensure that all potential errors are handled gracefully.
+*   **Add logging where appropriate:** I will add logging statements to help with debugging and monitoring the application.
 
-1.  **Input**: The application is controlled via command-line arguments, specifying the report type (`st1` or `st49`) and the desired action (`file`, `folder`, or `date_range`).
+## Refactoring
 
-2.  **Downloading (`src/downloader.rs`)**:
-    *   The `download_files_by_date_range` function fetches files concurrently for a given date range.
-    *   It uses `reqwest` for HTTP requests and `futures::future::join_all` for parallel execution, significantly speeding up the download process.
-    *   It dynamically constructs the URL based on the report type:
-        *   **ST1**: `https://static.aer.ca/prd/data/well-lic/WELLS{MMDD}.TXT` (uppercase extension)
-        *   **ST49**: `https://static.aer.ca/prd/data/wells/SPUD{MMDD}.txt` (lowercase extension)
-    *   Downloaded files are saved in the `TXT/` directory.
+*   **Break down large functions:** I will break down large functions into smaller, more manageable functions.
+*   **Improve readability:** I will improve the readability of the code by using clear and concise variable names, and by adding comments where necessary.
 
-3.  **Parsing (`src/st1.rs`, `src/st49.rs`)**:
-    *   Each report type has its own dedicated parsing module.
-    *   **`st1.rs`**: Parses the 5-line records of the ST1 well licence reports using fixed-width string slicing.
-    *   **`st49.rs`**: Parses single-line records from ST49 spud reports. It dynamically determines column boundaries by analyzing the separator line (`---`), making it resilient to format changes.
+## Commands
 
-4.  **Output**: The parsed data, held in a `Vec<License>` (for ST1) or `Vec<SpudData>` (for ST49), is serialized into a CSV file in the `CSV/` directory using the `csv` crate.
+### `file`
 
-## Key Files and Structs
+Processes a single raw report file and converts it to a CSV.
 
--   `src/main.rs`: The binary entry point. Parses command-line arguments and calls the appropriate functions from the library.
--   `src/lib.rs`: The library root. Defines the `ReportType` enum and orchestrates the calls to the downloader and parser modules.
--   `src/error.rs`: Defines the custom `AppError` enum for centralized error handling using `thiserror`.
--   `src/downloader.rs`: Contains the parallel download logic.
--   `src/st1.rs`: Contains the `License` struct and all parsing logic for ST1 reports.
--   `src/st49.rs`: Contains the `SpudData` struct and all parsing logic for ST49 reports.
+**Arguments:**
+-   `--report-type`: The type of report to process (`st1` or `st49`).
+-   `filename`: The path to the file to process.
+-   `--csv-output-dir`: (Optional) The directory to save the generated CSV file. Defaults to `CSV`.
 
-## Developer Workflows
-
-### Building the Project
-
-Use the standard Rust command:
-```sh
-cargo build
+**Usage:**
+```bash
+aer_parser file --report-type st1 /path/to/your/file.txt
 ```
 
-### Running the Parser
+### `folder`
 
-The application is run via `cargo run` with the report type, a command, and its arguments.
+Processes all raw report files in a given directory.
 
--   **Process a single ST49 file:**
-    ```sh
-    cargo run st49 file TXT/SPUD0101.TXT
-    ```
+**Arguments:**
+-   `--report-type`: The type of report to process (`st1` or `st49`).
+-   `folder_path`: The path to the folder to process.
+-   `--csv-output-dir`: (Optional) The directory to save the generated CSV files. Defaults to `CSV`.
 
--   **Process all ST1 files in a folder:**
-    ```sh
-    cargo run st1 folder TXT
-    ```
+**Usage:**
+```bash
+aer_parser folder --report-type st49 /path/to/your/folder
+```
 
--   **Download and process ST49 files for a date range:**
-    ```sh
-    cargo run st49 date_range 2025-01-01 2025-01-31
-    ```
+### `date-range`
 
-## Project-Specific Conventions
+Downloads and processes raw report files for a given date range.
 
--   **Parsing Logic**: The `st49` parser dynamically calculates column widths from the report's separator line, making it robust. However, the `st1` parser still uses fixed-width logic and is fragile to format changes.
--   **Error Handling**: The application uses a custom `AppError` enum and the `thiserror` crate for robust and descriptive error handling.
--   **Dependencies**: Key external dependencies are `tokio`, `reqwest`, `futures`, `csv`, `chrono`, and `thiserror`. These are defined in `Cargo.toml`.
+**Arguments:**
+-   `--report-type`: The type of report to process (`st1` or `st49`).
+-   `--start-date`: The start date in `YYYY-MM-DD` format.
+-   `--end-date`: The end date in `YYYY-MM-DD` format.
+-   `--txt-output-dir`: (Optional) The directory to save the downloaded raw files. Defaults to `TXT`.
+-   `--csv-output-dir`: (Optional) The directory to save the generated CSV files. Defaults to `CSV`.
+
+**Usage:**
+```bash
+aer_parser date-range --report-type st1 --start-date 2024-01-01 --end-date 2024-01-31
+```
+
+### `load-delta`
+
+Loads CSV files into a Delta table. This command is idempotent and uses a log file to track which CSVs have already been processed.
+
+**Arguments:**
+-   `--report-type`: The type of report to load (`st1` or `st49`).
+-   `--csv-folder`: The path to a folder containing CSV files to load.
+-   `--table-path`: The path to the Delta table.
+-   `--log-path`: (Optional) The path to the log file that tracks processed CSVs. Defaults to `delta_load_log.json`.
+-   `--recreate-table`: (Optional) A flag to delete and recreate the Delta table. **This will also delete the log file**, ensuring a fresh load of all CSVs in the source folder.
+
+**Usage:**
+```bash
+aer_parser load-delta --report-type st1 --csv-folder /path/to/your/csv_folder --table-path /path/to/your/delta_table
+```
+
+## Verification and Debugging
+
+### CSV Verification
+
+Before loading into a Delta table, you can verify the contents of the generated CSV files. This is useful for debugging the parsing logic.
+
+**ST1 CSV Verification:**
+```bash
+# Query the st1 CSVs from the CSV/ directory
+duckdb < ./read_delta_st1_csv.sql
+```
+
+**ST49 CSV Verification:**
+```bash
+# Query the st49 CSVs from the CSV/ directory
+duckdb < ./read_delta_st49_csv.sql
+```
+
+### Delta Table Verification
+
+To verify that the data has been loaded correctly into the Delta table, you can use the following workflow.
+
+**ST1 Verification:**
+```bash
+# Recreate the table and load all st1 CSVs from the CSV/ directory
+RUST_LOG=info cargo run --bin aer_parser load-delta --report-type st1 --csv-folder CSV --table-path st1 --recreate-table
+
+# Query the delta table to verify the contents
+duckdb < ./read_delta_st1.sql
+
+# Compare the delta table with the CSV files
+duckdb < ./st1_csv_delta_comparison.sql
+```
+
+**ST49 Verification:**
+```bash
+# Recreate the table and load all st49 CSVs from the CSV/ directory
+RUST_LOG=info cargo run --bin aer_parser load-delta --report-type st49 --csv-folder CSV --table-path st49 --recreate-table
+
+# Query the delta table to verify the contents
+duckdb < ./read_delta_st49.sql
+
+# Compare the delta table with the CSV files
+duckdb < ./st49_csv_delta_comparison.sql
+```
+
+### Debugging
+
+To see detailed logging output, set the `RUST_LOG` environment variable to `info`. This is useful for seeing which files are being found and loaded.
+
+```bash
+RUST_LOG=info cargo run --bin aer_parser ...
