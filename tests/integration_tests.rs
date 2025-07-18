@@ -1,10 +1,10 @@
 use aer_st1::st1;
 use aer_st1::st49;
-use std::fs;
-use std::io::Read;
-use std::fs::File;
-use std::path::PathBuf;
 use once_cell::sync::Lazy;
+use std::fs;
+use std::fs::File;
+use std::io::Read;
+use std::path::PathBuf;
 
 static INIT: Lazy<()> = Lazy::new(|| {
     env_logger::init();

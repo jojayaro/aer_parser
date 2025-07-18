@@ -1,8 +1,8 @@
+use crate::utils::{open_file_lines, process_folder_generic};
 use crate::AppError;
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
-use crate::utils::{open_file_lines, process_folder_generic};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpudData {
@@ -64,7 +64,7 @@ fn get_field_boundaries(separator: &str) -> Vec<(usize, usize)> {
     boundaries
 }
 
-fn extract_spud_data(lines: Vec<String>, date: String, separator: &str) -> Vec<SpudData> {
+fn extract_spud_data(lines: Vec<String>, date: NaiveDate, separator: &str) -> Vec<SpudData> {
     let mut spud_data_list: Vec<SpudData> = Vec::new();
     let boundaries = get_field_boundaries(separator);
 
@@ -78,7 +78,7 @@ fn extract_spud_data(lines: Vec<String>, date: String, separator: &str) -> Vec<S
         };
 
         spud_data_list.push(SpudData {
-            date: date.clone(),
+            date: date.to_string(),
             well_id: get_field(0),
             well_name: get_field(1),
             licence: get_field(2),
@@ -90,25 +90,30 @@ fn extract_spud_data(lines: Vec<String>, date: String, separator: &str) -> Vec<S
             ba_id: get_field(8),
             licensee: get_field(9),
             new_projected_total_depth: get_field(10),
-            activity_type: line.get(boundaries.get(10).map_or(line.len(), |b| b.1)..).unwrap_or("").trim().to_string(),
+            activity_type: line
+                .get(boundaries.get(10).map_or(line.len(), |b| b.1)..)
+                .unwrap_or("")
+                .trim()
+                .to_string(),
         });
     }
 
     spud_data_list
 }
 
-fn write_spud_data_to_csv(spud_data: Vec<SpudData>, filename: &str, csv_output_dir: &str) -> Result<(), AppError> {
+fn write_spud_data_to_csv(
+    spud_data: Vec<SpudData>,
+    filename: &str,
+    csv_output_dir: &str,
+) -> Result<(), AppError> {
     if spud_data.is_empty() {
         return Ok(());
     }
 
-    let output_filename = Path::new(filename)
-        .file_stem()
-        .and_then(|s| s.to_str())
-        .unwrap_or("output");
+    let output_filename = Path::new(filename).file_stem().and_then(|s| s.to_str()).unwrap_or("output").to_string();
 
     let mut wtr = csv::WriterBuilder::new()
-        .delimiter(b'|')
+        .delimiter(b',')
         .from_path(format!("{}/{}.csv", csv_output_dir, output_filename))?;
     for data in spud_data {
         wtr.serialize(data)?;
@@ -117,29 +122,31 @@ fn write_spud_data_to_csv(spud_data: Vec<SpudData>, filename: &str, csv_output_d
     Ok(())
 }
 
-fn extract_date(lines: &[String]) -> Result<String, AppError> {
+fn extract_date(lines: &[String]) -> Result<NaiveDate, AppError> {
     let date_line = lines.get(1).ok_or_else(|| AppError::FileProcessing("Date line not found".to_string()))?;
     let date_str = date_line.split_whitespace().skip(2).take(3).collect::<Vec<&str>>().join(" ");
     let parsed_date = NaiveDate::parse_from_str(&date_str, "%d %B %Y")?;
-    Ok(parsed_date.format("%Y-%m-%d").to_string())
+    Ok(parsed_date)
 }
 
-pub async fn process_file(filename: &str, csv_output_dir: &str) -> Result<(), AppError> {
+pub async fn process_file(filename: &str, csv_output_dir: &str) -> Result<NaiveDate, AppError> {
     let lines = open_file_lines(filename)?;
-    
-    let formatted_date = extract_date(&lines)?;
+
+    let extracted_date = extract_date(&lines)?;
 
     let (spud_data_lines, separator_line) = extract_data_and_separator(&lines);
     if let Some(separator) = separator_line {
-        let spud_data = extract_spud_data(spud_data_lines, formatted_date, &separator);
+        let spud_data = extract_spud_data(spud_data_lines, extracted_date, &separator);
         if !spud_data.is_empty() {
             write_spud_data_to_csv(spud_data, filename, csv_output_dir)?;
         }
     } else {
-        return Err(AppError::FileProcessing("Separator line not found in file".to_string()));
+        return Err(AppError::FileProcessing(
+            "Separator line not found in file".to_string(),
+        ));
     }
 
-    Ok(())
+    Ok(extracted_date)
 }
 
 pub async fn process_folder(folder_path: &str, csv_output_dir: &str) -> Result<(), AppError> {
@@ -147,6 +154,10 @@ pub async fn process_folder(folder_path: &str, csv_output_dir: &str) -> Result<(
     process_folder_generic(folder_path, "SPUD", move |filename_str| {
         let csv_output_dir = csv_output_dir.clone();
         let filename_owned = filename_str.to_string();
-        Box::pin(async move { process_file(&filename_owned, &csv_output_dir).await })
-    }).await
+        Box::pin(async move { 
+            let _ = process_file(&filename_owned, &csv_output_dir).await; // Year is not used in process_folder
+            Ok(()) 
+        })
+    })
+    .await
 }

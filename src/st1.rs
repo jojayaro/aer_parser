@@ -1,8 +1,8 @@
+use crate::utils::{open_file_lines, process_folder_generic};
 use crate::AppError;
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
-use crate::utils::{open_file_lines, process_folder_generic};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct License {
@@ -27,7 +27,11 @@ pub struct License {
 }
 
 fn trim_and_remove_empty_lines(lines: Vec<String>) -> Vec<String> {
-    lines.into_iter().filter(|line| !line.trim().is_empty()).map(|line| line.trim().to_string()).collect()
+    lines
+        .into_iter()
+        .filter(|line| !line.trim().is_empty())
+        .map(|line| line.trim().to_string())
+        .collect()
 }
 
 fn extract_licences_lines(lines: &[String]) -> Result<Vec<String>, AppError> {
@@ -49,10 +53,11 @@ fn extract_licences_lines(lines: &[String]) -> Result<Vec<String>, AppError> {
         // This is typically marked by the start of the next section or the end of the file
         for i in start..lines.len() {
             let line = &lines[i];
-            if line.contains("WELL LICENCES UPDATED") ||
-               line.contains("WELL LICENCES CANCELLED") ||
-               line.contains("AMENDMENTS OF WELL LICENCES") ||
-               line.contains("END OF WELL LICENCES DAILY LIST") {
+            if line.contains("WELL LICENCES UPDATED")
+                || line.contains("WELL LICENCES CANCELLED")
+                || line.contains("AMENDMENTS OF WELL LICENCES")
+                || line.contains("END OF WELL LICENCES DAILY LIST")
+            {
                 end_data_index = Some(i);
                 break;
             }
@@ -78,7 +83,7 @@ fn get_field<'a>(line: &'a str, start: usize, end: usize) -> Option<&'a str> {
     line.get(start..end).map(|s| s.trim())
 }
 
-fn extract_license(lines: Vec<String>, date: String) -> Vec<License> {
+fn extract_license(lines: Vec<String>, date: NaiveDate) -> Vec<License> {
     let mut licences: Vec<License> = Vec::new();
     for chunk in lines.chunks(5) {
         if chunk.len() == 5 {
@@ -89,7 +94,7 @@ fn extract_license(lines: Vec<String>, date: String) -> Vec<License> {
             let line4 = &chunk[4];
 
             licences.push(License {
-                date: date.clone(),
+                date: date.to_string(),
                 well_name: get_field(line0, 0, 37).unwrap_or("").to_string(),
                 licence_number: get_field(line0, 37, 47).unwrap_or("").to_string(),
                 mineral_rights: get_field(line0, 47, 68).unwrap_or("").to_string(),
@@ -113,18 +118,19 @@ fn extract_license(lines: Vec<String>, date: String) -> Vec<License> {
     licences
 }
 
-fn write_licence_to_csv(licences: Vec<License>, filename: &str, csv_output_dir: &str) -> Result<(), AppError> {
+fn write_licence_to_csv(
+    licences: Vec<License>,
+    filename: &str,
+    csv_output_dir: &str,
+) -> Result<(), AppError> {
     if licences.is_empty() {
         return Ok(());
     }
 
-    let output_filename = Path::new(filename)
-        .file_stem()
-        .and_then(|s| s.to_str())
-        .unwrap_or("output");
-    
+    let output_filename = Path::new(filename).file_stem().and_then(|s| s.to_str()).unwrap_or("output").to_string();
+
     let mut wtr = csv::WriterBuilder::new()
-        .delimiter(b'|')
+        .delimiter(b',')
         .from_path(format!("{}/{}.csv", csv_output_dir, output_filename))?;
     for licence in licences {
         wtr.serialize(licence)?;
@@ -133,9 +139,7 @@ fn write_licence_to_csv(licences: Vec<License>, filename: &str, csv_output_dir: 
     Ok(())
 }
 
-
-
-fn extract_date(lines: &[String]) -> Result<String, AppError> {
+fn extract_date(lines: &[String]) -> Result<NaiveDate, AppError> {
     let date_line = lines
         .iter()
         .find(|line| line.contains("DATE"))
@@ -146,24 +150,27 @@ fn extract_date(lines: &[String]) -> Result<String, AppError> {
     })?;
 
     let parsed_date = NaiveDate::parse_from_str(date_str, "%d %B %Y")?;
-    Ok(parsed_date.format("%Y-%m-%d").to_string())
+    Ok(parsed_date)
 }
 
-pub async fn process_file(filename: &str, csv_output_dir: &str) -> Result<(), AppError> {
+pub async fn process_file(filename: &str, csv_output_dir: &str) -> Result<NaiveDate, AppError> {
     let lines = open_file_lines(filename)?;
     let lines_trimmed = trim_and_remove_empty_lines(lines);
 
-    let formatted_date = extract_date(&lines_trimmed)?;
+    let extracted_date = extract_date(&lines_trimmed)?;
 
     let licences_lines = extract_licences_lines(&lines_trimmed)?;
     let licences_lines_trimmed = trim_and_remove_empty_lines(licences_lines);
-    log::info!("Extracted and trimmed licences_lines: {:#?}", licences_lines_trimmed);
-    let licences = extract_license(licences_lines_trimmed, formatted_date);
-    log::info!("Extracted licences: {:#?}", licences);
+    log::debug!(
+        "Extracted and trimmed licences_lines: {:#?}",
+        licences_lines_trimmed
+    );
+    let licences = extract_license(licences_lines_trimmed, extracted_date);
+    log::debug!("Extracted licences: {:#?}", licences);
     if !licences.is_empty() {
         write_licence_to_csv(licences, filename, csv_output_dir)?;
     }
-    Ok(())
+    Ok(extracted_date)
 }
 
 pub async fn process_folder(folder_path: &str, csv_output_dir: &str) -> Result<(), AppError> {
@@ -171,6 +178,10 @@ pub async fn process_folder(folder_path: &str, csv_output_dir: &str) -> Result<(
     process_folder_generic(folder_path, "WELLS", move |filename_str| {
         let csv_output_dir = csv_output_dir.clone();
         let filename_owned = filename_str.to_string();
-        Box::pin(async move { process_file(&filename_owned, &csv_output_dir).await })
-    }).await
+        Box::pin(async move { 
+            let _ = process_file(&filename_owned, &csv_output_dir).await; // Year is not used in process_folder
+            Ok(()) 
+        })
+    })
+    .await
 }

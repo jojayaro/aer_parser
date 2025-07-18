@@ -7,7 +7,11 @@ use reqwest;
 use std::fs::File;
 use std::io::Write;
 
-async fn download_and_save_file(client: &reqwest::Client, url: &str, file_path: &str) -> Result<(), AppError> {
+async fn download_and_save_file(
+    client: &reqwest::Client,
+    url: &str,
+    file_path: &str,
+) -> Result<(), AppError> {
     info!("Downloading file from {}", url);
     let response = client.get(url).send().await?;
 
@@ -44,7 +48,10 @@ async fn download_file(
 
     let filename_date = date.format("%m%d").to_string();
     let url = format!("{}{}.{}", url_prefix, filename_date, extension);
-    let filepath = format!("{}/{}{}.{}", txt_output_dir, file_prefix, filename_date, extension);
+    let filepath = format!(
+        "{}/{}{}.{}",
+        txt_output_dir, file_prefix, filename_date, extension
+    );
 
     download_and_save_file(client, &url, &filepath).await?;
 
@@ -62,7 +69,12 @@ pub async fn download_files_by_date_range(
     let mut current_date = start_date;
 
     while current_date <= end_date {
-        tasks.push(download_file(&client, current_date, &report_type, txt_output_dir));
+        tasks.push(download_file(
+            &client,
+            current_date,
+            &report_type,
+            txt_output_dir,
+        ));
         current_date += Duration::days(1);
     }
 

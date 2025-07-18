@@ -26,4 +26,6 @@ pub enum AppError {
     SerdeJson(#[from] serde_json::Error),
     #[error("Anyhow error: {0}")]
     Anyhow(#[from] anyhow::Error),
+    #[error("Zip error: {0}")]
+    Zip(#[from] zip::result::ZipError),
 }

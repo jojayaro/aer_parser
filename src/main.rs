@@ -1,7 +1,9 @@
-use aer_st1::{process_date_range, process_file, process_folder, AppError, ReportType};
+use aer_st1::{
+    process_date_range, process_file, process_folder, process_zip_folder, AppError, ReportType,
+};
 use chrono::NaiveDate;
-use log::{info};
 use clap::{Parser, Subcommand};
+use log::info;
 mod delta;
 
 #[derive(Parser, Debug)]
@@ -53,6 +55,17 @@ enum Commands {
         #[arg(long, default_value = "CSV")]
         csv_output_dir: String,
     },
+    /// Process all files in a zip folder
+    Zip {
+        /// The type of report to process (st1 or st49)
+        #[arg(long, value_enum)]
+        report_type: ReportType,
+        /// The path to the folder to process
+        folder_path: String,
+        /// Optional: Output directory for CSV files
+        #[arg(long, default_value = "CSV")]
+        csv_output_dir: String,
+    },
     /// Load CSV(s) into a Delta table
     LoadDelta {
         /// The type of report to load (st1 or st49)
@@ -82,17 +95,49 @@ async fn main() -> Result<(), AppError> {
     let cli = Cli::parse();
 
     match &cli.command {
-        Commands::File { report_type, filename, csv_output_dir } => {
+        Commands::File {
+            report_type,
+            filename,
+            csv_output_dir,
+        } => {
             info!("Processing file: {}", filename);
-            process_file(*report_type, filename, csv_output_dir).await?;
+            process_file(*report_type, filename, csv_output_dir, None, None).await?;
         }
-        Commands::Folder { report_type, folder_path, csv_output_dir } => {
+        Commands::Folder {
+            report_type,
+            folder_path,
+            csv_output_dir,
+        } => {
             info!("Processing folder: {}", folder_path);
             process_folder(*report_type, folder_path, csv_output_dir).await?;
         }
-        Commands::DateRange { report_type, start_date, end_date, txt_output_dir, csv_output_dir } => {
-            info!("Downloading and processing from {} to {}", start_date, end_date);
-            process_date_range(*report_type, *start_date, *end_date, txt_output_dir, csv_output_dir).await?;
+        Commands::DateRange {
+            report_type,
+            start_date,
+            end_date,
+            txt_output_dir,
+            csv_output_dir,
+        } => {
+            info!(
+                "Downloading and processing from {} to {}",
+                start_date, end_date
+            );
+            process_date_range(
+                *report_type,
+                *start_date,
+                *end_date,
+                txt_output_dir,
+                csv_output_dir,
+            )
+            .await?;
+        }
+        Commands::Zip {
+            report_type,
+            folder_path,
+            csv_output_dir,
+        } => {
+            info!("Processing zip folder: {}", folder_path);
+            process_zip_folder(*report_type, folder_path, csv_output_dir).await?;
         }
         Commands::LoadDelta {
             report_type,
@@ -102,7 +147,10 @@ async fn main() -> Result<(), AppError> {
             log_path,
             recreate_table,
         } => {
-            use crate::delta::{create_or_open_delta_table, load_csv_to_delta, log_loaded_csv, read_load_log, DeltaReportType};
+            use crate::delta::{
+                create_or_open_delta_table, load_csv_to_delta, log_loaded_csv, read_load_log,
+                DeltaReportType,
+            };
             use deltalake::DeltaOps;
             use std::fs;
             use std::path::Path;
@@ -132,8 +180,7 @@ async fn main() -> Result<(), AppError> {
                 ReportType::St49 => DeltaReportType::St49,
             };
 
-            let mut table =
-                create_or_open_delta_table(Path::new(table_path), delta_type).await?;
+            let mut table = create_or_open_delta_table(Path::new(table_path), delta_type).await?;
 
             let processed_files = read_load_log(&log_path)?;
 
@@ -151,7 +198,9 @@ async fn main() -> Result<(), AppError> {
                     if let Some(filename) = path.file_name().and_then(|n| n.to_str()) {
                         if filename.starts_with(prefix) && filename.ends_with(".csv") {
                             let canonical_path = path.canonicalize()?;
-                            if !processed_files.contains(&canonical_path.to_string_lossy().to_string()) {
+                            if !processed_files
+                                .contains(&canonical_path.to_string_lossy().to_string())
+                            {
                                 info!("Found CSV file: {:?}", path);
                                 csv_files.push(path);
                             } else {

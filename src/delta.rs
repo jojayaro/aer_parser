@@ -1,10 +1,10 @@
 use anyhow::{anyhow, Result};
 use chrono::Utc;
+use delta_kernel::engine::arrow_conversion::TryIntoArrow;
 use deltalake::arrow::array::RecordBatch;
 use deltalake::arrow::csv::ReaderBuilder;
 use deltalake::kernel::{DataType, PrimitiveType, StructField};
 use deltalake::protocol::SaveMode;
-use delta_kernel::engine::arrow_conversion::TryIntoArrow;
 
 use deltalake::{DeltaOps, DeltaTable};
 use serde::{Deserialize, Serialize};
@@ -76,7 +76,9 @@ pub async fn create_or_open_delta_table(
     table_path: &Path,
     report_type: DeltaReportType,
 ) -> Result<DeltaTable> {
-    let table_uri = table_path.to_str().ok_or_else(|| anyhow!("Invalid table path"))?;
+    let table_uri = table_path
+        .to_str()
+        .ok_or_else(|| anyhow!("Invalid table path"))?;
 
     if table_path.join("_delta_log").exists() {
         Ok(deltalake::open_table(table_uri).await?)
@@ -158,8 +160,7 @@ fn csv_to_record_batch(
     }
 
     Ok(deltalake::arrow::compute::concat_batches(
-        &schema,
-        &batches,
+        &schema, &batches,
     )?)
 }
 
