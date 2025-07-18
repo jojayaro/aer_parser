@@ -12,7 +12,7 @@ async fn download_and_save_file(
     url: &str,
     file_path: &str,
 ) -> Result<(), AppError> {
-    info!("Downloading file from {}", url);
+    info!("Downloading file from {url}");
     let response = client.get(url).send().await?;
 
     if !response.status().is_success() {
@@ -24,10 +24,10 @@ async fn download_and_save_file(
     }
 
     let bytes = response.bytes().await?;
-    debug!("Saving file to {}", file_path);
+    debug!("Saving file to {file_path}");
     let mut file = File::create(file_path)?;
     file.write_all(&bytes)?;
-    info!("Successfully downloaded and saved file to {}", file_path);
+    info!("Successfully downloaded and saved file to {file_path}");
     Ok(())
 }
 
@@ -47,10 +47,9 @@ async fn download_file(
     };
 
     let filename_date = date.format("%m%d").to_string();
-    let url = format!("{}{}.{}", url_prefix, filename_date, extension);
+    let url = format!("{url_prefix}{filename_date}.{extension}");
     let filepath = format!(
-        "{}/{}{}.{}",
-        txt_output_dir, file_prefix, filename_date, extension
+        "{txt_output_dir}/{file_prefix}{filename_date}.{extension}"
     );
 
     download_and_save_file(client, &url, &filepath).await?;
@@ -83,7 +82,7 @@ pub async fn download_files_by_date_range(
     for result in results {
         match result {
             Ok(filename) => downloaded_files.push(filename),
-            Err(e) => error!("A file download failed: {}", e), // Log error but continue
+            Err(e) => error!("A file download failed: {e}"), // Log error but continue
         }
     }
 

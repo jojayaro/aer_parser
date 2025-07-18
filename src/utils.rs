@@ -7,7 +7,7 @@ use std::path::Path;
 
 pub fn open_file_lines(filename: &str) -> Result<Vec<String>, std::io::Error> {
     let path = Path::new(filename);
-    let file = File::open(&path)?;
+    let file = File::open(path)?;
     let mut reader = BufReader::new(file);
     let mut buffer = Vec::new();
     reader.read_to_end(&mut buffer)?;
@@ -27,8 +27,7 @@ where
     let folder = Path::new(folder_path);
     if !folder.is_dir() {
         return Err(AppError::FileProcessing(format!(
-            "{} is not a valid directory",
-            folder_path
+            "{folder_path} is not a valid directory"
         )));
     }
 
@@ -38,9 +37,9 @@ where
         if path.is_file() {
             if let Some(filename) = path.to_str() {
                 if filename.contains(file_filter) && filename.ends_with(".TXT") {
-                    info!("Processing file: {}", filename);
+                    info!("Processing file: {filename}");
                     if let Err(e) = file_processor(filename).await {
-                        warn!("Failed to process file {}: {}", filename, e);
+                        warn!("Failed to process file {filename}: {e}");
                     }
                 }
             }

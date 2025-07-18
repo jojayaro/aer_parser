@@ -28,7 +28,7 @@ impl std::str::FromStr for ReportType {
         match s.to_lowercase().as_str() {
             "st1" => Ok(ReportType::St1),
             "st49" => Ok(ReportType::St49),
-            _ => Err(AppError::Cli(format!("Invalid report type: {}", s))),
+            _ => Err(AppError::Cli(format!("Invalid report type: {s}"))),
         }
     }
 }
@@ -48,8 +48,7 @@ pub async fn process_file(
     if let (Some(s_date), Some(e_date)) = (start_date, end_date) {
         if processed_date < s_date || processed_date > e_date {
             return Err(AppError::FileProcessing(format!(
-                "Date in file content ({}) is outside the specified range ({} - {}) for file: {}",
-                processed_date, s_date, e_date, filename
+                "Date in file content ({processed_date}) is outside the specified range ({s_date} - {e_date}) for file: {filename}"
             )));
         }
     }
@@ -67,8 +66,7 @@ pub async fn move_to_conversion_errors(
     let new_path = conversion_errors_dir.join(file_path.file_name().unwrap());
     fs::rename(file_path, &new_path)?;
     eprintln!(
-        "Failed to process file {:?}: {}. Moved to {:?}",
-        file_path, error_message, new_path
+        "Failed to process file {file_path:?}: {error_message}. Moved to {new_path:?}"
     );
     Ok(())
 }
@@ -97,7 +95,7 @@ pub async fn process_folder(
                         )
                         .await
                         {
-                            eprintln!("Failed to process file {:?}: {}", filename, e);
+                            eprintln!("Failed to process file {filename:?}: {e}");
                         }
                     }
                 }
@@ -132,8 +130,7 @@ pub async fn process_date_range(
                     ReportType::St49 => ("SPUD", "txt"),
                 };
                 let full_filename = format!(
-                    "{}/{}{}.{}",
-                    txt_output_dir_clone, prefix, filename, extension
+                    "{txt_output_dir_clone}/{prefix}{filename}.{extension}"
                 );
 
                 // Date validation
@@ -148,7 +145,7 @@ pub async fn process_date_range(
                 };
 
                 if date >= start_date && date <= end_date {
-                    info!("Processing file {} with date {} within range", full_filename, date);
+                    info!("Processing file {full_filename} with date {date} within range");
                     if let Err(e) = process_file(
                         report_type,
                         &full_filename,
@@ -158,13 +155,12 @@ pub async fn process_date_range(
                     )
                     .await
                     {
-                        eprintln!("Failed to process file {:?}: {}", full_filename, e);
+                        eprintln!("Failed to process file {full_filename:?}: {e}");
                         move_to_conversion_errors(Path::new(&full_filename), &e.to_string()).await?;
                     }
                 } else {
                     println!(
-                        "Skipping file {} with date {} outside of range",
-                        full_filename, date
+                        "Skipping file {full_filename} with date {date} outside of range"
                     );
                     move_to_conversion_errors(Path::new(&full_filename), "Date outside of range").await?;
                 }
@@ -176,7 +172,7 @@ pub async fn process_date_range(
 
     for future in futures.await {
         if let Err(e) = future {
-            eprintln!("An error occurred: {}", e);
+            eprintln!("An error occurred: {e}");
         }
     }
 
@@ -194,7 +190,7 @@ pub async fn process_single_zip_file(
         .file_stem()
         .and_then(|s| s.to_str())
         .and_then(|s| s.chars().take(4).collect::<String>().parse::<u32>().ok())
-        .ok_or_else(|| AppError::FileProcessing(format!("Could not extract year from zip filename: {:?}", zip_file_path)))?;
+        .ok_or_else(|| AppError::FileProcessing(format!("Could not extract year from zip filename: {zip_file_path:?}")))?;
 
     let txt_output_dir = Path::new("TXT");
     if !txt_output_dir.exists() {
@@ -230,7 +226,7 @@ pub async fn process_single_zip_file(
             // Report file
             let mut outfile = fs::File::create(&extracted_file_path)?;
             io::copy(&mut file, &mut outfile)?;
-            info!("Extracted file to: {:?}", extracted_file_path);
+            info!("Extracted file to: {extracted_file_path:?}");
 
             if let Err(e) = process_file(
                 report_type,
@@ -244,7 +240,7 @@ pub async fn process_single_zip_file(
                 move_to_conversion_errors(&extracted_file_path, &e.to_string()).await?;
             }
         } else {
-            info!("Skipping unknown file type: {:?}", outpath);
+            info!("Skipping unknown file type: {outpath:?}");
         }
     }
     Ok(())

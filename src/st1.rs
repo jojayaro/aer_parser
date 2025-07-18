@@ -79,7 +79,7 @@ fn extract_licences_lines(lines: &[String]) -> Result<Vec<String>, AppError> {
     Ok(licences_lines)
 }
 
-fn get_field<'a>(line: &'a str, start: usize, end: usize) -> Option<&'a str> {
+fn get_field(line: &str, start: usize, end: usize) -> Option<&str> {
     line.get(start..end).map(|s| s.trim())
 }
 
@@ -131,7 +131,7 @@ fn write_licence_to_csv(
 
     let mut wtr = csv::WriterBuilder::new()
         .delimiter(b',')
-        .from_path(format!("{}/{}.csv", csv_output_dir, output_filename))?;
+        .from_path(format!("{csv_output_dir}/{output_filename}.csv"))?;
     for licence in licences {
         wtr.serialize(licence)?;
     }
@@ -162,11 +162,10 @@ pub async fn process_file(filename: &str, csv_output_dir: &str) -> Result<NaiveD
     let licences_lines = extract_licences_lines(&lines_trimmed)?;
     let licences_lines_trimmed = trim_and_remove_empty_lines(licences_lines);
     log::debug!(
-        "Extracted and trimmed licences_lines: {:#?}",
-        licences_lines_trimmed
+        "Extracted and trimmed licences_lines: {licences_lines_trimmed:#?}"
     );
     let licences = extract_license(licences_lines_trimmed, extracted_date);
-    log::debug!("Extracted licences: {:#?}", licences);
+    log::debug!("Extracted licences: {licences:#?}");
     if !licences.is_empty() {
         write_licence_to_csv(licences, filename, csv_output_dir)?;
     }

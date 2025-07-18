@@ -114,7 +114,7 @@ fn write_spud_data_to_csv(
 
     let mut wtr = csv::WriterBuilder::new()
         .delimiter(b',')
-        .from_path(format!("{}/{}.csv", csv_output_dir, output_filename))?;
+        .from_path(format!("{csv_output_dir}/{output_filename}.csv"))?;
     for data in spud_data {
         wtr.serialize(data)?;
     }
