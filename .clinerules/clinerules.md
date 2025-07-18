@@ -40,7 +40,7 @@ Processes a single raw report file and converts it to a CSV.
 **Arguments:**
 -   `--report-type`: The type of report to process (`st1` or `st49`).
 -   `filename`: The path to the file to process.
--   `--csv-output-dir`: (Optional) The directory to save the generated CSV file. Defaults to `CSV`.
+-   `--csv-output-dir`: (Optional) The directory to save the generated CSV file. Defaults to `data/csv`.
 
 **Usage:**
 ```bash
@@ -54,7 +54,7 @@ Processes all raw report files in a given directory.
 **Arguments:**
 -   `--report-type`: The type of report to process (`st1` or `st49`).
 -   `folder_path`: The path to the folder to process.
--   `--csv-output-dir`: (Optional) The directory to save the generated CSV files. Defaults to `CSV`.
+-   `--csv-output-dir`: (Optional) The directory to save the generated CSV files. Defaults to `data/csv`.
 
 **Usage:**
 ```bash
@@ -69,12 +69,27 @@ Downloads and processes raw report files for a given date range.
 -   `--report-type`: The type of report to process (`st1` or `st49`).
 -   `--start-date`: The start date in `YYYY-MM-DD` format.
 -   `--end-date`: The end date in `YYYY-MM-DD` format.
--   `--txt-output-dir`: (Optional) The directory to save the downloaded raw files. Defaults to `TXT`.
--   `--csv-output-dir`: (Optional) The directory to save the generated CSV files. Defaults to `CSV`.
+-   `--txt-output-dir`: (Optional) The directory to save the downloaded raw files. Defaults to `data/txt`.
+-   `--csv-output-dir`: (Optional) The directory to save the generated CSV files. Defaults to `data/csv`.
 
 **Usage:**
 ```bash
 aer_parser date-range --report-type st1 --start-date 2024-01-01 --end-date 2024-01-31
+```
+
+### `zip`
+
+Processes all raw report files in a zip folder.
+
+**Arguments:**
+-   `--report-type`: The type of report to process (`st1` or `st49`).
+-   `folder_path`: The path to the folder to process.
+-   `--txt-output-dir`: (Optional) The directory to save the extracted raw files. Defaults to `data/txt`.
+-   `--csv-output-dir`: (Optional) The directory to save the generated CSV files. Defaults to `data/csv`.
+
+**Usage:**
+```bash
+aer_parser zip --report-type st1 /path/to/your/zip_folder
 ```
 
 ### `load-delta`
