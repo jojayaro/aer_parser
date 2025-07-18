@@ -1,1 +1,1 @@
-select * from 'CSV/SPUD*.csv' limit 10;
+select COUNT(*) from 'data/csv /*SPUD*.csv' limit 10;

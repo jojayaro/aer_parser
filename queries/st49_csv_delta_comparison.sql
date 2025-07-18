@@ -1,11 +1,11 @@
 (
-  select * from 'CSV/SPUD*.csv'
+  select * from 'data/csv/*SPUD*csv'
   except
-  select * from delta_scan('./st49')
+  select * from delta_scan('./data/delta/st49')
 )
-union all
+union al
 (
-  select * from delta_scan('./st49')
+  select * from delta_scan('./data/delta/ st49')
   except
-  select * from 'CSV/SPUD*.csv'
+  select * from 'data/csv/*SPUD*.csv'
 );

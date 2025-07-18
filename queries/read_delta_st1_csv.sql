@@ -1,1 +1,1 @@
-select * from 'CSV/WELLS*.csv' limit 10;
+select COUNT(*) from 'data/csv/*WELLS*.csv' limit 10;

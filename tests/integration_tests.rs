@@ -24,15 +24,15 @@ fn it_works() {
 async fn test_st1_processing_and_csv_output() -> Result<(), Box<dyn std::error::Error>> {
     setup();
     // Define paths
-    let input_file_path = PathBuf::from("/Users/jayaro/Repos/aer_parser/TXT/WELLS0102.TXT");
-    let expected_output_file_path = PathBuf::from("tests/test_data/wells0102_expected.csv");
-    let actual_output_file_path = PathBuf::from("CSV/WELLS0102_20140102.csv");
+    let _input_file_path = PathBuf::from("TXT/WELLS0102.TXT");
+    let expected_output_file_path = PathBuf::from("tests/test_data/20140102_WELLS_expected.csv");
+    let actual_output_file_path = PathBuf::from("CSV/20140102_WELLS.csv");
 
     // Ensure the CSV directory exists
     fs::create_dir_all(actual_output_file_path.parent().unwrap())?;
 
     // Process the ST1 file
-    st1::process_file(input_file_path.to_str().unwrap(), "CSV").await?;
+    st1::process_file("WELLS0102", "TXT", "CSV").await?;
 
     // Read the content of the generated CSV and the expected CSV
     let mut actual_csv_content = String::new();
@@ -54,15 +54,15 @@ async fn test_st1_processing_and_csv_output() -> Result<(), Box<dyn std::error::
 async fn test_st49_processing_and_csv_output() -> Result<(), Box<dyn std::error::Error>> {
     setup();
     // Define paths
-    let input_file_path = PathBuf::from("/Users/jayaro/Repos/aer_parser/TXT/SPUD0101.TXT");
-    let expected_output_file_path = PathBuf::from("tests/test_data/spud0101_expected.csv");
-    let actual_output_file_path = PathBuf::from("CSV/SPUD0101_20140101.csv");
+    let _input_file_path = PathBuf::from("TXT/SPUD0101.TXT");
+    let expected_output_file_path = PathBuf::from("tests/test_data/20140101_SPUD_expected.csv");
+    let actual_output_file_path = PathBuf::from("CSV/20140101_SPUD.csv");
 
     // Ensure the CSV directory exists
     fs::create_dir_all(actual_output_file_path.parent().unwrap())?;
 
     // Process the ST49 file
-    st49::process_file(input_file_path.to_str().unwrap(), "CSV").await?;
+    st49::process_file("SPUD0101", "TXT", "CSV").await?;
 
     // Read the content of the generated CSV and the expected CSV
     let mut actual_csv_content = String::new();

@@ -1,5 +1,6 @@
 pub mod downloader;
 pub mod error;
+pub mod parsers;
 pub mod st1;
 pub mod st49;
 pub mod utils;
