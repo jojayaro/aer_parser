@@ -13,6 +13,7 @@ use std::fs::{File, OpenOptions};
 use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
 use std::sync::Arc;
+use log::warn;
 
 /// Supported report types for delta ingestion.
 #[derive(Copy, Clone, Debug)]
@@ -163,10 +164,6 @@ fn csv_to_record_batch(
         &schema, &batches,
     )?)
 }
-
-use log::warn;
-
-// ... (rest of the file until load_csv_to_delta)
 
 /// Load a CSV file into the delta table.
 pub async fn load_csv_to_delta(table: &mut DeltaTable, csv_path: &Path) -> Result<usize> {

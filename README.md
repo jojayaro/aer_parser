@@ -4,6 +4,123 @@
 
 This high-performance Rust-based parser efficiently processes the Alberta Energy Regulator's ST1 and ST49 data, which contains critical information on oil and gas exploration licenses and drilling activities. The ST1 and ST49 reports, available from the AER's [official page](https://www.aer.ca/providing-information/data-and-reports/statistical-reports/st1), provide valuable insights into the regulatory landscape of Alberta's energy sector.
 
+## Architecture & Data Flow
+
+### System Architecture
+```mermaid
+graph TB
+    subgraph "CLI Interface"
+        CLI[Command Line Interface]
+        Commands[Subcommands]
+    end
+    
+    subgraph "Core Modules"
+        Main[main.rs]
+        Lib[lib.rs]
+        Error[error.rs]
+    end
+    
+    subgraph "Processing Pipeline"
+        Downloader[downloader.rs]
+        Parser[st1.rs / st49.rs]
+        Delta[delta.rs]
+        Utils[utils.rs]
+    end
+    
+    subgraph "Data Storage"
+        TXT[TXT Files]
+        CSV[CSV Files]
+        DeltaLake[Delta Lake Tables]
+    end
+    
+    CLI --> Commands
+    Commands --> Main
+    Main --> Downloader
+    Main --> Parser
+    Main --> Delta
+    Parser --> CSV
+    Downloader --> TXT
+    CSV --> DeltaLake
+    Utils -.-> Parser
+    Utils -.-> Delta
+    Error -.-> All
+```
+
+### Data Flow by Command Type
+
+#### File Processing Flow
+```mermaid
+sequenceDiagram
+    participant CLI as Command Line
+    participant Main as Main Module
+    participant Parser as ST1/ST49 Parser
+    participant CSV as CSV Writer
+    participant Output as Output Directory
+    
+    CLI->>Main: Execute file command
+    Main->>Parser: Process single file
+    Parser->>Parser: Parse raw text
+    Parser->>CSV: Generate CSV
+    CSV->>Output: Save to directory
+```
+
+#### Folder Processing Flow
+```mermaid
+sequenceDiagram
+    participant CLI as Command Line
+    participant Main as Main Module
+    participant Parser as ST1/ST49 Parser
+    participant CSV as CSV Writer
+    participant Output as Output Directory
+    
+    CLI->>Main: Execute folder command
+    Main->>Main: Scan directory
+    loop For each file
+        Main->>Parser: Process file
+        Parser->>CSV: Generate CSV
+        CSV->>Output: Save to directory
+    end
+```
+
+#### Date Range Processing Flow
+```mermaid
+sequenceDiagram
+    participant CLI as Command Line
+    participant Main as Main Module
+    participant Downloader as Downloader
+    participant Parser as ST1/ST49 Parser
+    participant CSV as CSV Writer
+    
+    CLI->>Main: Execute date-range command
+    Main->>Downloader: Download files for date range
+    Downloader->>Downloader: Fetch from AER
+    loop For each downloaded file
+        Main->>Parser: Process file
+        Parser->>CSV: Generate CSV
+    end
+```
+
+#### Delta Lake Loading Flow
+```mermaid
+sequenceDiagram
+    participant CLI as Command Line
+    participant Main as Main Module
+    participant Delta as Delta Module
+    participant Log as Log Manager
+    participant Lake as Delta Lake
+    
+    CLI->>Main: Execute load-delta command
+    Main->>Log: Read processed files log
+    Main->>Main: Filter unprocessed CSVs
+    loop For each CSV file
+        Main->>Delta: Load CSV to Delta
+        Delta->>Lake: Append data
+        Delta->>Log: Mark as processed
+    end
+    Main->>Delta: Optimize table
+    Main->>Delta: Vacuum stale files
+```
+
 ## Key Features
 
 - **Asynchronous File Downloading**: Utilizes `tokio` and `reqwest` for efficient, non-blocking file retrieval.
@@ -13,25 +130,6 @@ This high-performance Rust-based parser efficiently processes the Alberta Energy
 - **Error Handling**: Comprehensive error management with detailed context and recovery suggestions.
 - **Memory Efficient**: Employs Rust's ownership model and streaming operations for optimal memory usage when processing large datasets.
 - **Modular Architecture**: Clean separation of concerns with dedicated modules for parsing, error handling, and utilities.
-
-## Architecture
-
-The codebase is organized into a modular structure:
-
-```
-src/
-├── parsers/
-│   ├── common.rs      # Shared utilities and file operations
-│   ├── error.rs       # Centralized error handling
-│   └── mod.rs         # Module exports
-├── st1.rs             # ST1 report parser
-├── st49.rs            # ST49 report parser
-├── delta.rs           # Delta Lake integration
-├── downloader.rs      # File downloading utilities
-├── utils.rs           # General utilities
-├── error.rs           # Application error types
-└── lib.rs             # Library exports
-```
 
 ## Usage
 
@@ -55,12 +153,47 @@ After processing files into CSVs, you can load them into a Delta Lake table. Thi
   - `--report-type`: Specify `st1` or `st49`.
   - `--table-path`: The path where your Delta table will be created or exists.
   - `--csv-path`: (Optional) Path to a single CSV file to load.
-  - `--csv-folder`: (Optional) Path to a folder containing CSV files to load. Files are filtered by report type prefix (WELLS for ST1, SPUD for ST49).
+  - `--csv-folder`: (Optional) Path to a folder containing CSV files to load. Files are filtered by report type (contains "WELLS" for ST1, "SPUD" for ST49).
   - `--log-path`: (Optional) Path to a log file to track processed CSVs (defaults to `delta_load_log.json`).
   - `--recreate-table`: (Optional) If present, the Delta table and log file will be deleted and recreated before loading.
 
   Example (loading a single CSV): `cargo run load-delta --report-type st1 --csv-path ./CSV/WELLS20230101.csv --table-path ./delta_tables/st1_data`
   Example (loading from a folder): `cargo run load-delta --report-type st49 --csv-folder ./CSV --table-path ./delta_tables/st49_data --recreate-table`
+
+## Architecture Components
+
+### Module Structure
+```mermaid
+graph TD
+    src[src/]
+    src --> main[main.rs]
+    src --> lib[lib.rs]
+    src --> st1[st1.rs]
+    src --> st49[st49.rs]
+    src --> delta[delta.rs]
+    src --> downloader[downloader.rs]
+    src --> utils[utils.rs]
+    src --> error[error.rs]
+    src --> parsers[parsers/]
+    
+    parsers --> common[common.rs]
+    parsers --> error_parser[error.rs]
+    parsers --> traits[traits.rs]
+    parsers --> mod_parser[mod.rs]
+```
+
+### Data Processing Pipeline
+```mermaid
+flowchart LR
+    A[Raw TXT Files] --> B[Downloader]
+    B --> C[ST1/ST49 Parser]
+    C --> D[CSV Generator]
+    D --> E[Delta Lake Loader]
+    E --> F[Optimized Delta Tables]
+    
+    style A fill:#f9f,stroke:#333
+    style F fill:#9f9,stroke:#333
+```
 
 ## Development
 

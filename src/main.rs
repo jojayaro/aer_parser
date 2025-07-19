@@ -209,7 +209,7 @@ async fn main() -> Result<(), AppError> {
                     let entry = entry?;
                     let path = entry.path();
                     if let Some(filename) = path.file_name().and_then(|n| n.to_str()) {
-                        if filename.starts_with(prefix) && filename.ends_with(".csv") {
+                        if filename.contains(prefix) && filename.ends_with(".csv") {
                             let canonical_path = path.canonicalize()?;
                             if !processed_files
                                 .contains(&canonical_path.to_string_lossy().to_string())

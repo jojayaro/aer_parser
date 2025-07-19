@@ -91,7 +91,7 @@ pub fn write_csv_records<T: Serialize>(
     let full_path = output_path.join(output_filename);
 
     let mut wtr = csv::WriterBuilder::new()
-        .delimiter(b',')
+        .delimiter(b'|')
         .from_path(full_path)?;
     
     for record in records {

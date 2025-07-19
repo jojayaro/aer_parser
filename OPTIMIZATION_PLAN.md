@@ -71,20 +71,20 @@ This document outlines a comprehensive optimization and refactoring plan for the
 ### Phase 4: Final Polish & Documentation
 **Priority: Low** | **Timeline: 1-2 days**
 
-#### 4.1 Performance Benchmarking
-- [ ] Add cargo bench configuration
-- [ ] Create performance regression tests
-- [ ] Document performance characteristics
-
-#### 4.2 Final Documentation
+#### 4.1 Final Documentation
 - [ ] Update README with new architecture
 - [ ] Add performance tuning guide
 - [ ] Create troubleshooting section
 
-#### 4.3 Code Review & Cleanup
+#### 4.2 Code Review & Cleanup
 - [ ] Final clippy fixes
 - [ ] Format consistency check
 - [ ] Remove any remaining TODOs
+
+#### 4.3 Performance Benchmarking
+- [ ] Add cargo bench configuration
+- [ ] Create performance regression tests
+- [ ] Document performance characteristics
 
 ## 📊 Impact Summary
 
