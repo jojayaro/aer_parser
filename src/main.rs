@@ -161,7 +161,7 @@ async fn main() -> Result<(), AppError> {
             recreate_table,
         } => {
             use crate::delta::{
-                create_or_open_delta_table, load_csv_to_delta, log_loaded_csv, read_load_log,
+                create_or_open_delta_table, load_csvs_to_delta, log_loaded_csv, read_load_log,
                 DeltaReportType,
             };
             use deltalake::DeltaOps;
@@ -233,17 +233,33 @@ async fn main() -> Result<(), AppError> {
                 }
             }
 
-            for csv in csv_files {
-                match load_csv_to_delta(&mut table, &csv).await {
+            if !csv_files.is_empty() {
+                info!("Loading {} CSV files as a single batch operation with 1GB target file size", csv_files.len());
+                
+                // Convert Vec<PathBuf> to Vec<&Path>
+                let csv_paths: Vec<&Path> = csv_files.iter().map(|p| p.as_path()).collect();
+                
+                match load_csvs_to_delta(&mut table, &csv_paths).await {
                     Ok(loaded_rows) => {
-                        info!("Loaded {loaded_rows} rows from {csv:?}");
-                        log_loaded_csv(&log_path, &csv)?;
+                        info!("Successfully loaded {loaded_rows} total rows from {} CSV files", csv_files.len());
+                        
+                        // Log all processed files
+                        for csv_path in &csv_files {
+                            log_loaded_csv(&log_path, csv_path)?;
+                        }
                     }
                     Err(e) => {
-                        eprintln!("Failed to load CSV file {csv:?}: {e}");
-                        aer_st1::move_to_conversion_errors(&csv, &e.to_string()).await?;
+                        eprintln!("Failed to load CSV files as batch: {e}");
+                        // Move individual files to conversion_errors if batch fails
+                        for csv in &csv_files {
+                            if let Err(e) = aer_st1::move_to_conversion_errors(csv, &e.to_string()).await {
+                                eprintln!("Failed to move file to conversion_errors: {e}");
+                            }
+                        }
                     }
                 }
+            } else {
+                info!("No new CSV files to process");
             }
 
             info!("Optimizing delta table at {table_path}");

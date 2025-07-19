@@ -165,8 +165,12 @@ fn csv_to_record_batch(
     )?)
 }
 
-/// Load a CSV file into the delta table.
-pub async fn load_csv_to_delta(table: &mut DeltaTable, csv_path: &Path) -> Result<usize> {
+/// Load multiple CSV files into the delta table as a single batch operation.
+/// This creates larger parquet files instead of many small ones.
+pub async fn load_csvs_to_delta(
+    table: &mut DeltaTable,
+    csv_paths: &[&Path],
+) -> Result<usize> {
     let arrow_schema = Arc::new(
         table
             .schema()
@@ -174,24 +178,49 @@ pub async fn load_csv_to_delta(table: &mut DeltaTable, csv_path: &Path) -> Resul
             .try_into_arrow()?,
     );
 
-    let batch = match csv_to_record_batch(csv_path, Arc::clone(&arrow_schema)) {
-        Ok(batch) => batch,
-        Err(e) => {
-            warn!("Could not read CSV file {csv_path:?}, skipping: {e}");
-            return Ok(0);
+    let mut all_batches = Vec::new();
+    let mut total_rows = 0;
+
+    // Collect all data from all CSV files into a single large batch
+    for csv_path in csv_paths {
+        match csv_to_record_batch(csv_path, Arc::clone(&arrow_schema)) {
+            Ok(batch) => {
+                total_rows += batch.num_rows();
+                all_batches.push(batch);
+            }
+            Err(e) => {
+                warn!("Could not read CSV file {csv_path:?}, skipping: {e}");
+                continue;
+            }
         }
-    };
+    }
 
-    let num_rows = batch.num_rows();
+    if all_batches.is_empty() {
+        return Ok(0);
+    }
 
-    if num_rows > 0 {
+    // Combine all batches into a single large RecordBatch
+    let combined_batch = deltalake::arrow::compute::concat_batches(
+        &arrow_schema,
+        &all_batches,
+    )?;
+
+    if combined_batch.num_rows() > 0 {
         let ops = DeltaOps::from(table.clone());
+        
+        // Configure write with large target file size (1GB = 1_073_741_824 bytes)
         let table_ref = ops
-            .write(vec![batch.clone()])
+            .write(vec![combined_batch])
             .with_save_mode(SaveMode::Append)
+            .with_target_file_size(1_073_741_824) // 1GB in bytes
             .await?;
         *table = table_ref;
     }
 
-    Ok(num_rows)
+    Ok(total_rows)
+}
+
+/// Legacy function for loading a single CSV file (kept for backward compatibility)
+pub async fn load_csv_to_delta(table: &mut DeltaTable, csv_path: &Path) -> Result<usize> {
+    load_csvs_to_delta(table, &[csv_path]).await
 }
