@@ -243,7 +243,7 @@ pub async fn process_file(
     txt_input_dir: &str,
     csv_output_dir: &str,
 ) -> Result<NaiveDate, AppError> {
-    let filename = format!("{}/{}.TXT", txt_input_dir, filename_stem);
+    let filename = format!("{}/{}.txt", txt_input_dir, filename_stem);
     let content = file_ops::read_file_content(&filename)?;
     let lines: Vec<String> = content.lines().map(|s| s.to_string()).collect();
     let lines_trimmed = trim_and_remove_empty_lines(lines);
