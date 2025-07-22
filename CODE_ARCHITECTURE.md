@@ -437,3 +437,31 @@ sequenceDiagram
 1. Extend error types in `error.rs`
 2. Add recovery strategies in parsers
 3. Update logging and reporting
+
+## CLI Command Details & Workflow Enhancements
+
+### Supported Commands
+- `file`: Process a single file
+- `folder`: Process all files in a folder
+- `date-range`: Download and process files within a date range
+- `zip`: Process all files in a zip folder
+- `load-delta`: Load CSV(s) into a Delta table
+
+### Default Output Directories
+- CSV files: `data/csv`
+- TXT files: `data/txt`
+
+### Delta Load Log File
+- Defaults to `delta_load_log.json` inside the Delta table directory
+
+### CSV Filtering Logic
+- When loading CSVs into Delta, files are filtered by prefix (`WELLS` for ST1, `SPUD` for ST49) and must end with `.csv`.
+
+### Error Handling for Delta Loads
+- If batch loading fails, files are moved to the `conversion_errors` directory for inspection.
+
+### Batch Loading Details
+- All new CSVs are loaded as a single batch operation with a 1GB target file size.
+
+### Optimize & Vacuum
+- After loading, the table is optimized and vacuumed automatically.

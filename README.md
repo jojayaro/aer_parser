@@ -136,13 +136,16 @@ sequenceDiagram
 ### File Retrieval and Processing
 
 - **Process a single file**: `cargo run file --report-type <st1|st49> <filename> --csv-output-dir <output_directory>`
-  Example: `cargo run file --report-type st1 WELLS20230101.TXT --csv-output-dir CSV`
+  Example: `cargo run file --report-type st1 WELLS20230101.TXT --csv-output-dir data/csv`
 
 - **Process all files in a folder**: `cargo run folder --report-type <st1|st49> <folder_path> --csv-output-dir <output_directory>`
-  Example: `cargo run folder --report-type st49 ./TXT --csv-output-dir CSV`
+  Example: `cargo run folder --report-type st49 ./data/txt --csv-output-dir data/csv`
 
 - **Download and process files for a date range**: `cargo run date-range --report-type <st1|st49> --start-date <YYYY-MM-DD> --end-date <YYYY-MM-DD> --txt-output-dir <txt_output_directory> --csv-output-dir <csv_output_directory>`
-  Example: `cargo run date-range --report-type st1 --start-date 2023-01-01 --end-date 2023-01-31 --txt-output-dir TXT --csv-output-dir CSV`
+  Example: `cargo run date-range --report-type st1 --start-date 2023-01-01 --end-date 2023-01-31 --txt-output-dir data/txt --csv-output-dir data/csv`
+
+- **Process all files in a zip folder**: `cargo run zip --report-type <st1|st49> <folder_path> --txt-output-dir <txt_output_directory> --csv-output-dir <csv_output_directory>`
+  Example: `cargo run zip --report-type st1 ./data/zip --txt-output-dir data/txt --csv-output-dir data/csv`
 
 ### Loading Data into Delta Lake
 
@@ -153,12 +156,16 @@ After processing files into CSVs, you can load them into a Delta Lake table. Thi
   - `--report-type`: Specify `st1` or `st49`.
   - `--table-path`: The path where your Delta table will be created or exists.
   - `--csv-path`: (Optional) Path to a single CSV file to load.
-  - `--csv-folder`: (Optional) Path to a folder containing CSV files to load. Files are filtered by report type (contains "WELLS" for ST1, "SPUD" for ST49).
-  - `--log-path`: (Optional) Path to a log file to track processed CSVs (defaults to `delta_load_log.json`).
+  - `--csv-folder`: (Optional) Path to a folder containing CSV files to load. Files are filtered by report type (contains "WELLS" for ST1, "SPUD" for ST49) and must end with `.csv`.
+  - `--log-path`: (Optional) Path to a log file to track processed CSVs (defaults to `delta_load_log.json` inside the Delta table directory).
   - `--recreate-table`: (Optional) If present, the Delta table and log file will be deleted and recreated before loading.
 
-  Example (loading a single CSV): `cargo run load-delta --report-type st1 --csv-path ./CSV/WELLS20230101.csv --table-path ./delta_tables/st1_data`
-  Example (loading from a folder): `cargo run load-delta --report-type st49 --csv-folder ./CSV --table-path ./delta_tables/st49_data --recreate-table`
+  - **Batch Loading**: All new CSVs are loaded as a single batch operation with a 1GB target file size.
+  - **Error Handling**: If batch loading fails, files are moved to the `conversion_errors` directory for inspection.
+  - **Optimize & Vacuum**: After loading, the table is optimized and vacuumed automatically.
+
+  Example (loading a single CSV): `cargo run load-delta --report-type st1 --csv-path ./data/csv/WELLS20230101.csv --table-path ./data/deltalake/st1`
+  Example (loading from a folder): `cargo run load-delta --report-type st49 --csv-folder ./data/csv --table-path ./data/deltalake/st49 --recreate-table`
 
 ## Architecture Components
 
