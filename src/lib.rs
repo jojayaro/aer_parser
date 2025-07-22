@@ -174,6 +174,7 @@ pub async fn process_date_range(
                         .file_stem()
                         .and_then(|s| s.to_str())
                         .unwrap_or_default();
+                    // info!("Processing file: {filename_stem:?}");
 
                     if let Err(e) = process_file(
                         report_type,
