@@ -1,4 +1,4 @@
-# ST1 Alberta Energy Regulator Parser
+# ST1 and ST49 Alberta Energy Regulator Parser
 
 ## Overview
 
