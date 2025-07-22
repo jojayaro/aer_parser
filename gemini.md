@@ -1,35 +1,118 @@
-# CLI Rules
+# CLI Rules & Development Guidelines
 
-This document outlines the usage of the `aer_parser` command-line interface.
+This document outlines the development practices and usage guidelines for the `aer_parser` command-line interface.
 
-## General Principles
+## Core Development Principles
 
-*   **Small, Incremental Changes:** I will make small, focused changes to the codebase.
-*   **Document the codebase:** I will document the codebase thoroughly, including comments and documentation for public functions and modules.
-*   **Test-Driven Development (TDD):** I will write tests before implementing new features or fixing bugs.
-*   **Run Tests Frequently:** I will run the test suite frequently to ensure that the codebase remains stable.
-*   **Use of `cargo clippy`:** I will run `cargo clippy` to check for common mistakes and improve code quality.
-*   **Use of `cargo fmt`:** I will run `cargo fmt` to ensure that the code is formatted consistently.
-*   **Test After Each Change:** After every change, I will run the appropriate tests to ensure that the change has not introduced any regressions.
-*   **Commit Frequently:** I will commit my changes frequently, with clear and descriptive commit messages.
-*   **Update Readme.md:** I will update the `README.md` file with any new features or changes to the CLI commands.
-*   **Follow Best Practices:** I will adhere to Rust best practices for code style, error handling, and performance.
-*   **Clear Communication:** I will keep you informed of my progress and any issues I encounter.
-*   **Use of `clap` for CLI arguments:** I will use the `clap` crate to handle command-line arguments and options, ensuring a user-friendly interface.
-*   **Stop when in doubt and ask questions:** If I am unsure about a specific implementation detail or design decision, I will stop and ask for clarification.
-*   **Prioritize simplicity and maintainability:** I will strive to keep the code simple and easy to maintain, avoiding unnecessary complexity. No unsafe code is allowed in the project or dependencies.
-*   **If I can't find a reference file I will check .gitignore first before asking for help.** This will help avoid unnecessary questions and speed up the development process.
+### Code Quality & Maintenance
+*   **Small, Incremental Changes:** Make focused, atomic changes that are easy to review and rollback
+*   **Code Deduplication:** Identify and eliminate duplicate code through shared utilities and modules
+*   **Memory Efficiency:** Use streaming/buffered operations for large files to minimize memory usage
+*   **Performance First:** Profile before optimizing; maintain benchmarks for critical paths
+*   **Backward Compatibility:** Preserve existing CLI interface and file format support
 
-## Error Handling and Logging
+### Testing Strategy
+*   **Test-Driven Development (TDD):** Write tests before implementing new features or fixing bugs
+*   **Comprehensive Testing:** Maintain 90%+ test coverage with unit, integration, and property tests
+*   **Test Data Management:** Use fixtures and mock data instead of hardcoded paths
+*   **Performance Testing:** Include benchmarks for parsing operations and memory usage
+*   **Regression Testing:** Run full test suite before each commit
 
-*   **Use `thiserror` for custom error types:** I will use the `thiserror` crate to create custom error types that provide clear and informative error messages.
-*   **Implement comprehensive error handling:** I will ensure that all potential errors are handled gracefully.
-*   **Add logging where appropriate:** I will add logging statements to help with debugging and monitoring the application.
+### Code Organization
+*   **Modular Design:** Separate concerns into distinct modules (parsing, I/O, error handling)
+*   **Shared Utilities:** Extract common functionality into reusable components
+*   **Documentation Standards:** Document all public APIs with examples and usage patterns
+*   **Error Context:** Provide detailed error messages with file context and recovery suggestions
 
-## Refactoring
+## Development Workflow
 
-*   **Break down large functions:** I will break down large functions into smaller, more manageable functions.
-*   **Improve readability:** I will improve the readability of the code by using clear and concise variable names, and by adding comments where necessary.
+### Pre-commit Checklist
+```bash
+# Run before each commit
+cargo fmt --check
+cargo clippy -- -D warnings
+cargo test
+cargo test --test integration_tests
+```
+
+### Performance Validation
+```bash
+# Run performance benchmarks
+cargo bench
+# Check memory usage
+cargo test --release -- --nocapture | grep "Memory usage"
+```
+
+## Error Handling & Logging Standards
+
+### Error Types
+*   **Use `thiserror` for custom error types** with rich context
+*   **Provide actionable error messages** with file positions and expected formats
+*   **Implement error recovery** where possible (skip bad records, continue processing)
+
+### Logging Guidelines
+*   **INFO**: High-level progress (file processing start/end, record counts)
+*   **DEBUG**: Detailed parsing information (field extraction, format detection)
+*   **WARN**: Recoverable issues (skipped records, format variations)
+*   **ERROR**: Critical failures with context
+
+## Testing Standards
+
+### Test Structure
+```
+tests/
+├── unit/           # Individual function tests
+├── integration/    # End-to-end workflows
+├── fixtures/       # Test data files
+└── benchmarks/     # Performance tests
+```
+
+### Test Data Guidelines
+*   **Use relative paths** from project root
+*   **Create temporary files** for output testing
+*   **Include edge cases**: empty files, malformed data, large files
+*   **Property-based testing** for format validation
+
+## Performance Optimization
+
+### Memory Management
+*   **Buffered reading** for large files (>10MB)
+*   **Streaming CSV writing** to reduce memory peaks
+*   **String interning** for repeated values (licenses, company names)
+*   **Progress reporting** for long-running operations
+
+### Benchmarking
+```bash
+# Run parsing benchmarks
+cargo bench --bench parsing_benchmarks
+# Memory profiling
+cargo test --release -- --nocapture
+```
+
+## Documentation Standards
+
+### Code Documentation
+*   **Module-level docs** with usage examples
+*   **Function-level docs** with parameter descriptions
+*   **Inline comments** for complex parsing logic
+*   **Error documentation** with recovery strategies
+
+### README Maintenance
+*   **Keep examples current** with latest CLI syntax
+*   **Add troubleshooting section** for common issues
+*   **Include performance tips** for large datasets
+*   **Document breaking changes** in CHANGELOG.md
+
+## Refactoring Guidelines
+
+### When to Refactor
+*   **Code duplication** > 20 lines
+*   **Function complexity** > 50 lines
+*   **Cyclomatic complexity** > 10
+*   **Repeated error patterns**
+
+### Refactoring Process
+1.
 
 ## Commands
 

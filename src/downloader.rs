@@ -46,8 +46,9 @@ async fn download_file(
         ReportType::St49 => ("https://static.aer.ca/prd/data/wells/SPUD", "SPUD", "txt"),
     };
 
-    let filename_date = date.format("%m%d").to_string();
-    let url = format!("{url_prefix}{filename_date}.{extension}");
+    let filename_date = date.format("%m%d%Y").to_string();
+    let filename_date_url = date.format("%m%d").to_string();
+    let url = format!("{url_prefix}{filename_date_url}.{extension}");
     let filepath = format!("{txt_output_dir}/{file_prefix}{filename_date}.{extension}");
 
     download_and_save_file(client, &url, &filepath).await?;

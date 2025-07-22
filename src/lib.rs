@@ -63,7 +63,7 @@ pub async fn move_to_conversion_errors(
     file_path: &Path,
     error_message: &str,
 ) -> Result<(), AppError> {
-    let conversion_errors_dir = Path::new("conversion_errors");
+    let conversion_errors_dir = Path::new("data/conversion_errors");
     if !conversion_errors_dir.exists() {
         fs::create_dir_all(conversion_errors_dir)?;
     }
@@ -162,8 +162,7 @@ pub async fn process_date_range(
                 };
 
                 let full_filename_with_year = format!(
-                    "{txt_output_dir_clone}/{prefix}{filename}{}.{extension}",
-                    date.year()
+                    "{txt_output_dir_clone}/{prefix}{filename}.{extension}"
                 );
 
                 if date >= start_date && date <= end_date {
